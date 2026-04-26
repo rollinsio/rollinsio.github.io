@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michael Rollins · Directory</title>
+    <meta name="description" content="Michael Rollins — builder, engineer. Workshop, code, writing, and a way to get in touch.">
+    <!--
+      CONFIG — swap these placeholders before publishing:
+        ROLLINS_BIO       → one-sentence bio under the name
+        WORKSHOP_URL      → https://workshop.rollins.io  (already configured below)
+        WORKSHOP_DATE     → e.g. Saturday, May 9
+        GITHUB_URL        → https://github.com/<handle>
+        WRITING_URL       → blog / Substack / personal site for long-form
+        YOUTUBE_URL       → channel URL  (delete row if unused)
+        X_URL             → https://x.com/<handle>
+        LINKEDIN_URL      → https://www.linkedin.com/in/<handle>
+        CAL_URL           → cal.com / Calendly booking link  (delete row if unused)
+        EMAIL             → public address (e.g. hello@rollins.io)
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ink:    { 950: '#0c0b0a', 900: '#15120f', 800: '#1f1b16', 700: '#2a251f' },
+                        paper:  { 50:  '#f3ead8', 300: '#c8bfae', 500: '#857d6e' },
+                        ember:  { 300: '#ffb070', 500: '#ff7a18' }
+                    },
+                    fontFamily: {
+                        sans:    ['Fraunces', 'Georgia', 'serif'],
+                        serif:   ['Fraunces', 'Georgia', 'serif'],
+                        display: ['Fraunces', 'Georgia', 'serif'],
+                        mono:    ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body { background: #0c0b0a; color: #c8bfae; }
+        body { font-family: 'Fraunces', Georgia, serif; }
+
+        .grain {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95   0 0 0 0 0.92   0 0 0 0 0.85   0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+            background-size: 240px 240px;
+        }
+        .ember-glow {
+            background: radial-gradient(ellipse at 75% 0%, rgba(255,122,24,0.10) 0%, rgba(255,122,24,0.04) 28%, transparent 60%);
+        }
+
+        .display {
+            font-family: 'Fraunces', Georgia, serif;
+            font-variation-settings: "opsz" 144, "wght" 480, "SOFT" 30;
+            font-feature-settings: "ss01", "liga", "dlig";
+            letter-spacing: -0.025em;
+            line-height: 0.95;
+        }
+        .display em {
+            font-variation-settings: "opsz" 144, "wght" 380, "SOFT" 100;
+            font-style: italic;
+            color: #ffb070;
+        }
+        .prose-serif {
+            font-variation-settings: "opsz" 22, "wght" 380;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .rise { opacity: 0; animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+        .rise-1 { animation-delay: 0.05s; }
+        .rise-2 { animation-delay: 0.18s; }
+        .rise-3 { animation-delay: 0.32s; }
+        .rise-4 { animation-delay: 0.46s; }
+        .rise-row { opacity: 0; animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+
+        @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        .dot-blink { animation: blink 1.6s steps(1, end) infinite; }
+
+        .cap {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #857d6e;
+        }
+
+        /* Pinned card */
+        .pinned {
+            position: relative;
+            background: #15120f;
+            border: 1px solid #1f1b16;
+            transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        .pinned::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: #ff7a18;
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+        .pinned:hover { transform: translateY(-2px); border-color: #2a251f; }
+        .pinned:hover::before { opacity: 1; }
+        .pinned .arrow { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+        .pinned:hover .arrow { transform: translateX(6px); }
+
+        /* Directory rows */
+        .row {
+            position: relative;
+            display: grid;
+            grid-template-columns: 2.4rem 6.8rem 1fr auto;
+            align-items: baseline;
+            gap: 1.25rem;
+            padding: 1.15rem 0.5rem 1.15rem 1.5rem;
+            border-top: 1px solid #1f1b16;
+            transition: padding-left 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.28s ease;
+        }
+        .row:last-of-type { border-bottom: 1px solid #1f1b16; }
+        .row::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            background: #ff7a18;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .row:hover { padding-left: 1.85rem; background: rgba(255,122,24,0.04); }
+        .row:hover::before { opacity: 0.9; }
+        .row .arrow {
+            font-family: 'JetBrains Mono', monospace;
+            color: #857d6e;
+            transition: color 0.25s ease, transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        .row:hover .arrow { color: #ff7a18; transform: translateX(6px); }
+        .row .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #857d6e;
+            letter-spacing: 0.08em;
+        }
+        .row .cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #857d6e;
+        }
+        .row .title {
+            font-variation-settings: "opsz" 36, "wght" 460;
+            color: #f3ead8;
+            font-size: 1.18rem;
+            letter-spacing: -0.005em;
+        }
+        .row .meta {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #857d6e;
+            margin-top: 0.25rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* Mobile collapse for rows */
+        @media (max-width: 640px) {
+            .row {
+                grid-template-columns: 2.4rem 1fr auto;
+                grid-template-areas:
+                    "num title arrow"
+                    ".   meta  arrow"
+                    ".   cat   arrow";
+                row-gap: 0.35rem;
+            }
+            .row .num   { grid-area: num; }
+            .row .cat   { grid-area: cat; }
+            .row .title { grid-area: title; }
+            .row .meta  { grid-area: meta; }
+            .row .arrow { grid-area: arrow; align-self: center; }
+        }
+
+        .ulink {
+            position: relative;
+            color: #ffb070;
+            text-decoration: none;
+            transition: color 0.18s ease;
+        }
+        .ulink::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: -2px;
+            height: 1px;
+            background: currentColor;
+            transform: scaleX(0.4);
+            transform-origin: left;
+            opacity: 0.5;
+            transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.18s ease;
+        }
+        .ulink:hover { color: #ff7a18; }
+        .ulink:hover::after { transform: scaleX(1); opacity: 1; }
+
+        .marginalia {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #857d6e;
+            line-height: 1.6;
+        }
+        .marginalia .num {
+            display: block;
+            font-size: 0.82rem;
+            color: #ff7a18;
+            margin-bottom: 0.5rem;
+        }
+
+        .sub-rule {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin: 2.2rem 0 0.35rem;
+        }
+        .sub-rule .line { flex: 1; height: 1px; background: #1f1b16; }
+        .sub-rule .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: #857d6e;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .rise, .rise-row, .dot-blink, .pinned, .row, .ulink::after, .arrow {
+                animation: none !important;
+                transition: none !important;
+            }
+            .rise, .rise-row { opacity: 1; transform: none; }
+        }
+
+        ::selection { background: rgba(255,122,24,0.42); color: #f3ead8; }
+    </style>
+</head>
+<body class="bg-ink-950 text-paper-300 antialiased relative overflow-x-hidden">
+
+    <div class="grain fixed inset-0 pointer-events-none opacity-[0.045] z-[1]"></div>
+    <div class="ember-glow absolute top-0 left-0 right-0 h-[480px] pointer-events-none z-[0]"></div>
+
+    <div class="relative z-[2] min-h-screen flex flex-col">
+
+        <!-- Top rail -->
+        <div class="max-w-3xl mx-auto w-full px-6 pt-7 flex items-center justify-between">
+            <div class="cap">
+                <span class="text-paper-50">Δ</span>&nbsp;&nbsp;rollins.io&nbsp;·&nbsp;directory
+            </div>
+            <div class="cap">
+                Vol.&nbsp;01&nbsp;·&nbsp;<span class="text-ember-500 dot-blink">●</span>&nbsp;Live
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <header class="max-w-3xl mx-auto w-full px-6 pt-20 pb-10">
+            <div class="grid grid-cols-12 gap-6">
+                <aside class="col-span-12 sm:col-span-3 marginalia rise rise-1">
+                    <span class="num">§ 00</span>
+                    Directory
+                </aside>
+                <div class="col-span-12 sm:col-span-9">
+                    <div class="cap rise rise-1 mb-5">Builder · Engineer · Live-build host</div>
+                    <h1 class="display text-paper-50 text-5xl sm:text-6xl md:text-7xl rise rise-2 mb-6">
+                        Michael <em>Rollins</em>.
+                    </h1>
+                    <p class="prose-serif text-paper-300 text-lg md:text-xl leading-snug max-w-[40ch] rise rise-3">
+                        ROLLINS_BIO. A small directory of where I work, write, and ship — plus how to get in touch.
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pinned: Workshop -->
+        <section class="max-w-3xl mx-auto w-full px-6">
+            <div class="grid grid-cols-12 gap-6">
+                <aside class="col-span-12 sm:col-span-3 marginalia rise rise-3">
+                    <span class="num">§ 01</span>
+                    Pinned
+                </aside>
+                <div class="col-span-12 sm:col-span-9">
+                    <a href="https://workshop.rollins.io" class="pinned block p-7 md:p-8 rise rise-4">
+                        <div class="flex items-baseline justify-between mb-5">
+                            <span class="cap text-paper-50">★ Live workshop</span>
+                            <span class="cap">WORKSHOP_DATE&nbsp;·&nbsp;09:00 PT</span>
+                        </div>
+                        <h2 class="display text-paper-50 text-3xl md:text-4xl mb-3">
+                            Agents <em>building</em> Agents.
+                        </h2>
+                        <p class="prose-serif text-paper-300 text-base mb-6 max-w-[48ch]">
+                            Two-hour live build. 60 minutes of code on screen — a Python sandbox, an LLM loop, RAG memory — then 60 of deep Q&amp;A.
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs tracking-[0.18em] uppercase text-ember-500">workshop.rollins.io →</span>
+                            <span class="arrow font-mono text-xl text-ember-500">→</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Directory -->
+        <section class="max-w-3xl mx-auto w-full px-6 pt-16 pb-16 flex-1">
+            <div class="grid grid-cols-12 gap-6">
+                <aside class="col-span-12 sm:col-span-3 marginalia">
+                    <span class="num">§ 02</span>
+                    Elsewhere
+                </aside>
+                <div class="col-span-12 sm:col-span-9">
+
+                    <div class="sub-rule" aria-hidden="true">
+                        <span class="line"></span>
+                        <span class="label">build · ship</span>
+                        <span class="line"></span>
+                    </div>
+
+                    <a href="GITHUB_URL" class="row rise-row" style="animation-delay:0.05s;">
+                        <span class="num">02</span>
+                        <span class="cat">Code</span>
+                        <span>
+                            <span class="title">GitHub</span>
+                            <span class="meta">Open source, experiments, agent frameworks</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <div class="sub-rule" aria-hidden="true">
+                        <span class="line"></span>
+                        <span class="label">say · publish</span>
+                        <span class="line"></span>
+                    </div>
+
+                    <a href="WRITING_URL" class="row rise-row" style="animation-delay:0.12s;">
+                        <span class="num">03</span>
+                        <span class="cat">Writing</span>
+                        <span>
+                            <span class="title">Notes &amp; essays</span>
+                            <span class="meta">Long-form on agents, tooling, and craft</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <a href="YOUTUBE_URL" class="row rise-row" style="animation-delay:0.18s;">
+                        <span class="num">04</span>
+                        <span class="cat">Video</span>
+                        <span>
+                            <span class="title">YouTube</span>
+                            <span class="meta">Talks, demos, and recorded sessions</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <div class="sub-rule" aria-hidden="true">
+                        <span class="line"></span>
+                        <span class="label">connect</span>
+                        <span class="line"></span>
+                    </div>
+
+                    <a href="X_URL" class="row rise-row" style="animation-delay:0.24s;">
+                        <span class="num">05</span>
+                        <span class="cat">Social</span>
+                        <span>
+                            <span class="title">X / Twitter</span>
+                            <span class="meta">Short notes, build updates, replies</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <a href="LINKEDIN_URL" class="row rise-row" style="animation-delay:0.30s;">
+                        <span class="num">06</span>
+                        <span class="cat">Social</span>
+                        <span>
+                            <span class="title">LinkedIn</span>
+                            <span class="meta">Background, work history, intros</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <a href="CAL_URL" class="row rise-row" style="animation-delay:0.36s;">
+                        <span class="num">07</span>
+                        <span class="cat">Talk</span>
+                        <span>
+                            <span class="title">Book a call</span>
+                            <span class="meta">30 minutes, anything you want to ask</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                    <a href="mailto:EMAIL" class="row rise-row" style="animation-delay:0.42s;">
+                        <span class="num">08</span>
+                        <span class="cat">Email</span>
+                        <span>
+                            <span class="title">EMAIL</span>
+                            <span class="meta">Slow inbox; thoughtful replies</span>
+                        </span>
+                        <span class="arrow text-lg">→</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Colophon -->
+        <footer class="max-w-3xl mx-auto w-full px-6 pb-12 pt-6">
+            <div class="grid grid-cols-12 gap-6">
+                <aside class="col-span-12 sm:col-span-3 marginalia">
+                    <span class="num">§ FN</span>
+                    Colophon
+                </aside>
+                <div class="col-span-12 sm:col-span-9 border-t border-ink-800 pt-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                        <div class="cap">
+                            <span class="text-paper-50">Δ</span>&nbsp;&nbsp;rollins.io&nbsp;·&nbsp;Vol.&nbsp;01&nbsp;·&nbsp;© 2026
+                        </div>
+                        <div class="cap normal-case" style="text-transform:none;letter-spacing:0.04em;">
+                            Set in Fraunces &amp; JetBrains Mono.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
