@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Michael Rollins</title>
     <meta name="description" content="Michael Rollins — builder, engineer. Workshop, code, writing, and a way to get in touch.">
+    <meta property="og:title" content="Michael Rollins">
+    <meta property="og:description" content="Builder, engineer, and host of the Δ-V live-build workshop.">
+    <meta property="og:url" content="https://rollins.io/">
+    <meta name="twitter:card" content="summary">
     <!--
       CONFIG — placeholders to fill before publishing:
         ROLLINS_BIO    one-sentence bio under the name
@@ -22,13 +26,16 @@
 </head>
 <body class="bg-bg text-fg antialiased">
 
-    <main class="max-w-prose mx-auto px-6 py-20 md:py-28">
+    <main class="max-w-prose mx-auto px-6 py-16 md:py-24">
 
-        <!-- Top: tiny site mark -->
-        <div class="eyebrow mb-20 fade-in">rollins.io</div>
+        <!-- Identity -->
+        <header class="text-center mb-16 fade-in">
+            <div class="avatar mx-auto mb-4" aria-hidden="true">MR</div>
+            <div class="eyebrow">rollins.io</div>
+        </header>
 
         <!-- Hero -->
-        <header class="mb-20">
+        <section class="mb-16">
             <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-5 fade-in">Michael Rollins</h1>
             <p class="text-fg/90 text-lg leading-relaxed mb-3 fade-in" style="animation-delay:0.05s">
                 ROLLINS_BIO.
@@ -36,24 +43,22 @@
             <p class="text-muted text-base leading-relaxed fade-in" style="animation-delay:0.1s">
                 Builder, engineer, and host of the Δ-V live-build workshop.
             </p>
-        </header>
+        </section>
 
-        <!-- Workshop callout -->
-        <section class="mb-20 fade-in" style="animation-delay:0.15s">
-            <a href="/workshop/" class="card block p-6 group">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="eyebrow">Upcoming workshop · WORKSHOP_DATE</span>
-                    <span class="text-dim group-hover:text-accent transition-colors">→</span>
+        <!-- Featured: Workshop -->
+        <section class="mb-16 fade-in" style="animation-delay:0.15s">
+            <a href="/workshop/" class="featured lg">
+                <div class="top">
+                    <span class="badge">● UPCOMING WORKSHOP · WORKSHOP_DATE</span>
+                    <span class="arrow">→</span>
                 </div>
-                <div class="text-xl font-semibold mb-1">Agents building Agents</div>
-                <p class="text-muted text-sm leading-relaxed">
-                    Two hours, live. 60 minutes of code on screen — Python sandbox, agent loop, RAG memory — then 60 of Q&amp;A.
-                </p>
+                <div class="title">Agents building Agents</div>
+                <div class="meta">Two hours, live. 60 minutes of code on screen — Python sandbox, agent loop, RAG memory — then 60 of Q&amp;A.</div>
             </a>
         </section>
 
-        <!-- Links -->
-        <section class="mb-20 fade-in" style="animation-delay:0.2s">
+        <!-- Elsewhere -->
+        <section class="mb-16 fade-in" style="animation-delay:0.2s">
             <div class="eyebrow mb-4">Elsewhere</div>
 
             <a href="GITHUB_URL" class="row-link">

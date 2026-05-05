@@ -22,6 +22,11 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 
 - Background `#0a0a0a`, surface `#121212`, border `#1f1f1f`, foreground `#ededed`, muted `#888888`, dim `#5a5a5a`.
 - Single accent: ember orange `#ff7a18`, used sparingly — primary CTA, hover states, "live" status dot. Most of the page is neutral.
+- Card / button / featured radius is **6px** site-wide. Interactive cards (`a.card`, `.link-btn`, `.featured`, `.btn`) lift `translateY(-1px)` on hover with an ember border accent. Non-interactive cards just shift to a slightly lighter border on hover.
+- All three pages share the same identity header: a centered `.avatar` gradient circle with "MR" initials over a small `eyebrow` mark. The container width and body layout differ by page purpose:
+  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Big left-aligned `text-4xl md:text-5xl` h1, multi-paragraph hero, ember-tinted `.featured.lg` workshop callout, then a `.row-link` directory of "Elsewhere" links. This is the front door — generous spacing, breathing room.
+  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, ember-tinted `.featured` workshop tile, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
+  - **`/workshop/`** — content-dense at `max-w-3xl`. Same centered `.avatar` identity header (the avatar is the back-link to `/`), then editorial hero, curriculum, logistics, requirements, pricing tiers, FAQ.
 - No grain, no glow, no italic flourishes, no marginalia, no `§ XX` numbering, no rule-with-label dividers, no "Vol. 01" framing. Minimal animation: a single `fade-in` on each block, no stagger cascade beyond small per-element `animation-delay`.
 
 ## Directory layout
@@ -29,16 +34,16 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 ```
 .
 ├── CNAME                 rollins.io
-├── index.html            home page (page-only CSS: none beyond inline)
+├── index.html            home page (no page-specific CSS — all from /shared/)
 ├── workshop/
 │   └── index.html        workshop page (page-only CSS: .step, .tier, details.qa)
 ├── links/
-│   └── index.html        linktree-style page (page-only CSS: .link-btn, .featured, .avatar)
+│   └── index.html        share-targeted link landing (no page-specific CSS — all from /shared/)
 └── shared/
     ├── tailwind-init.js  shared tailwind.config — do not duplicate
     ├── tokens.css        body bg/fg, font, ::selection
-    ├── base.css          .eyebrow, .link, .row-link, .card, .fade-in / @keyframes fade-in, reduced-motion guard
-    └── components.css    .btn / .btn-primary / .btn-ghost, .kv  (only link from pages that use these)
+    ├── base.css          .eyebrow, .link, .row-link, .card (+ a.card lift hover), .fade-in / @keyframes fade-in, reduced-motion guard
+    └── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .featured.lg modifier), .avatar
 ```
 
 ## Editing rules
@@ -58,13 +63,19 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="/shared/tokens.css">
    <link rel="stylesheet" href="/shared/base.css">
-   <!-- only if you use .btn / .kv -->
    <link rel="stylesheet" href="/shared/components.css">
    <script src="https://cdn.tailwindcss.com"></script>
    <script src="/shared/tailwind-init.js"></script>
    ```
-3. Write only page-specific CSS in a `<style>` block.
-4. Add a row to the home `Elsewhere` section linking to the new path, and link back from the new page's footer or top to `/`.
+3. Open with the shared centered identity header so the brand reads consistently:
+   ```html
+   <header class="text-center mb-9 fade-in">
+       <a href="/" aria-label="Back to rollins.io" class="avatar mx-auto mb-3">MR</a>
+       <div class="eyebrow"><slug> · rollins.io</div>
+   </header>
+   ```
+4. Compose body sections from the shared vocabulary — `.featured` for ember-accented hero cards, `.link-btn` for stacked link rows, `.card` + `.kv` for key-value blocks, `.btn` / `.btn-primary` / `.btn-ghost` for CTAs. Write only genuinely page-specific CSS in a `<style>` block.
+5. Add a row to the home `Elsewhere` link stack pointing at the new path.
 
 ## Preview locally
 

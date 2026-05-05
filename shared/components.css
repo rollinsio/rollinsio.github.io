@@ -5,22 +5,22 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.65rem 1.1rem;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 1px solid transparent;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 .btn-primary {
     background: #ff7a18;
     color: #0a0a0a;
 }
-.btn-primary:hover { background: #ff924a; }
+.btn-primary:hover { background: #ff924a; transform: translateY(-1px); }
 .btn-ghost {
     color: #ededed;
     border-color: #2a2a2a;
 }
-.btn-ghost:hover { border-color: #5a5a5a; color: #ff7a18; }
+.btn-ghost:hover { border-color: #ff7a18; color: #ff7a18; transform: translateY(-1px); }
 
 .kv {
     display: flex;
@@ -33,3 +33,82 @@
 .kv:first-child { border-top: none; }
 .kv .k { color: #888888; }
 .kv .v { color: #ededed; }
+
+/* Stacked button-style link — full width, label + optional sub + arrow. */
+.link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.95rem 1.1rem;
+    background: #121212;
+    border: 1px solid #1f1f1f;
+    border-radius: 6px;
+    color: #ededed;
+    font-weight: 500;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+.link-btn:hover {
+    border-color: #ff7a18;
+    background: #161616;
+    transform: translateY(-1px);
+}
+.link-btn .left { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.link-btn .label { line-height: 1.2; }
+.link-btn .sub { font-weight: 400; font-size: 0.82rem; color: #888888; }
+.link-btn .arrow {
+    color: #5a5a5a;
+    transition: color 0.15s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+.link-btn:hover .arrow { color: #ff7a18; transform: translateX(3px); }
+
+/* Featured card — ember-tinted gradient with ember accent border. */
+.featured {
+    display: block;
+    padding: 1.1rem 1.2rem;
+    background: linear-gradient(180deg, rgba(255,122,24,0.06), transparent 60%), #121212;
+    border: 1px solid rgba(255,122,24,0.45);
+    border-radius: 6px;
+    transition: border-color 0.15s ease, transform 0.12s ease;
+}
+.featured:hover { border-color: #ff7a18; transform: translateY(-1px); }
+.featured .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.featured .top .badge {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: #ff7a18;
+    letter-spacing: 0.06em;
+}
+.featured .top .arrow { color: #ff7a18; }
+.featured .title { font-weight: 600; font-size: 1.05rem; line-height: 1.3; margin-bottom: 0.25rem; }
+.featured .meta { color: #888888; font-size: 0.85rem; }
+
+/* .featured.lg — expansive variant for editorial / wide-canvas pages. */
+.featured.lg { padding: 1.6rem 1.7rem; }
+.featured.lg .top { margin-bottom: 0.65rem; }
+.featured.lg .title { font-size: 1.5rem; line-height: 1.25; margin-bottom: 0.45rem; }
+.featured.lg .meta { font-size: 0.95rem; line-height: 1.6; }
+
+/* Identity avatar — gradient circle with initials. */
+.avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a18 0%, #1f1f1f 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0a0a0a;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn, .btn-primary, .btn-ghost, .link-btn, .link-btn .arrow, .featured {
+        transition: none !important;
+        transform: none !important;
+    }
+}

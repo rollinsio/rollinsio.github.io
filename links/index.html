@@ -19,87 +19,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/shared/tokens.css">
     <link rel="stylesheet" href="/shared/base.css">
+    <link rel="stylesheet" href="/shared/components.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/shared/tailwind-init.js"></script>
-    <style>
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            width: 100%;
-            padding: 0.95rem 1.1rem;
-            background: #121212;
-            border: 1px solid #1f1f1f;
-            border-radius: 6px;
-            color: #ededed;
-            font-weight: 500;
-            transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
-        }
-        .link-btn:hover {
-            border-color: #ff7a18;
-            background: #161616;
-            transform: translateY(-1px);
-        }
-        .link-btn .sub {
-            font-weight: 400;
-            font-size: 0.82rem;
-            color: #888888;
-        }
-        .link-btn .arrow {
-            color: #5a5a5a;
-            transition: color 0.15s ease, transform 0.15s ease;
-            flex-shrink: 0;
-        }
-        .link-btn:hover .arrow {
-            color: #ff7a18;
-            transform: translateX(3px);
-        }
-        .link-btn .left { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-        .link-btn .label { line-height: 1.2; }
-
-        .featured {
-            display: block;
-            padding: 1.1rem 1.2rem;
-            background: linear-gradient(180deg, rgba(255,122,24,0.06), transparent 60%), #121212;
-            border: 1px solid rgba(255,122,24,0.45);
-            border-radius: 6px;
-            transition: border-color 0.15s ease, transform 0.12s ease;
-        }
-        .featured:hover { border-color: #ff7a18; transform: translateY(-1px); }
-        .featured .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
-        .featured .top .badge {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 0.7rem;
-            color: #ff7a18;
-            letter-spacing: 0.06em;
-        }
-        .featured .top .arrow { color: #ff7a18; }
-        .featured .title { font-weight: 600; font-size: 1.05rem; line-height: 1.3; margin-bottom: 0.25rem; }
-        .featured .meta { color: #888888; font-size: 0.85rem; }
-
-        .avatar {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff7a18 0%, #1f1f1f 70%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-weight: 600;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
-            margin: 0 auto 1.1rem;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .link-btn, .featured, .link-btn .arrow {
-                transition: none !important;
-                transform: none !important;
-            }
-        }
-    </style>
 </head>
 <body class="bg-bg text-fg antialiased">
 
@@ -107,7 +29,7 @@
 
         <!-- Identity -->
         <header class="text-center mb-9 fade-in">
-            <div class="avatar" aria-hidden="true">MR</div>
+            <div class="avatar mx-auto mb-4" aria-hidden="true">MR</div>
             <h1 class="text-xl font-semibold tracking-tight mb-1.5">Michael Rollins</h1>
             <p class="text-muted text-sm leading-relaxed">
                 Builder · engineer · live-build host
