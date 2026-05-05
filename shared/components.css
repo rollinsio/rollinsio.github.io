@@ -1,0 +1,35 @@
+/* Components for the modern dark theme. Only loaded by pages that use these patterns. */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn-primary {
+    background: #ff7a18;
+    color: #0a0a0a;
+}
+.btn-primary:hover { background: #ff924a; }
+.btn-ghost {
+    color: #ededed;
+    border-color: #2a2a2a;
+}
+.btn-ghost:hover { border-color: #5a5a5a; color: #ff7a18; }
+
+.kv {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid #1f1f1f;
+    font-size: 0.92rem;
+}
+.kv:first-child { border-top: none; }
+.kv .k { color: #888888; }
+.kv .v { color: #ededed; }

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Building Agents — Live Workshop</title>
+    <meta name="description" content="A two-hour live build session: Python sandbox, agent loop, RAG memory. 60m build + 60m Q&A.">
+    <!--
+      CONFIG — placeholders to fill before publishing:
+        WORKSHOP_DATE   e.g. Saturday, May 9   (must match home page hero card)
+        WORKSHOP_EMAIL  e.g. workshop@rollins.io (Google Workspace alias)
+        STRIPE_LINK_*   Stripe Payment Link URLs (Dashboard → Payment Links)
+
+      Duration is referenced in three places that must stay in sync:
+        - Hero subhead ("Two hours, live")
+        - Curriculum intro paragraph ("first hour … full hour")
+        - Logistics "Format" line ("60m build + 60m Q&A")
+        - FAQ ("60-minute Q&A")
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/tokens.css">
+    <link rel="stylesheet" href="/shared/base.css">
+    <link rel="stylesheet" href="/shared/components.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/shared/tailwind-init.js"></script>
+    <style>
+        /* Curriculum steps — small mono index, then content */
+        .step {
+            display: grid;
+            grid-template-columns: 2.5rem 1fr;
+            gap: 1rem;
+            padding: 1.1rem 0;
+            border-top: 1px solid #1f1f1f;
+        }
+        .step:last-child { border-bottom: 1px solid #1f1f1f; }
+        .step .idx { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.85rem; color: #888888; padding-top: 0.1rem; }
+        .step .title { font-weight: 500; color: #ededed; margin-bottom: 0.15rem; }
+        .step .body { color: #888888; font-size: 0.95rem; line-height: 1.55; }
+
+        /* Pricing tier card */
+        .tier {
+            display: flex;
+            flex-direction: column;
+            background: #121212;
+            border: 1px solid #1f1f1f;
+            border-radius: 4px;
+            padding: 1.6rem;
+        }
+        .tier.featured {
+            border-color: rgba(255,122,24,0.45);
+            background: linear-gradient(180deg, rgba(255,122,24,0.04), transparent 40%), #121212;
+        }
+        .tier .tier-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.72rem; color: #888888; margin-bottom: 0.9rem; display: flex; justify-content: space-between; gap: 0.5rem; }
+        .tier.featured .tier-eyebrow .label { color: #ff7a18; }
+        .tier .price { font-size: 2.5rem; font-weight: 600; color: #ededed; letter-spacing: -0.02em; margin-bottom: 0.9rem; }
+        .tier .price .currency { color: #888888; font-size: 1.1rem; font-weight: 400; vertical-align: 0.6em; margin-right: 0.15em; }
+        .tier .blurb { color: #888888; font-size: 0.92rem; line-height: 1.5; margin-bottom: 1.2rem; min-height: 4.2rem; }
+        .tier ul { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
+        .tier ul li { color: #ededed; font-size: 0.92rem; padding: 0.35rem 0; border-top: 1px solid #1f1f1f; }
+        .tier ul li:first-child { border-top: none; }
+        .tier .btn { width: 100%; justify-content: center; }
+
+        /* FAQ accordion — minimal */
+        details.qa { border-top: 1px solid #1f1f1f; padding: 1rem 0; }
+        details.qa:last-of-type { border-bottom: 1px solid #1f1f1f; }
+        details.qa > summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            color: #ededed;
+            font-weight: 500;
+        }
+        details.qa > summary::-webkit-details-marker { display: none; }
+        details.qa > summary::after {
+            content: "+";
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            color: #5a5a5a;
+            transition: color 0.15s ease;
+        }
+        details.qa[open] > summary::after { content: "−"; color: #ff7a18; }
+        details.qa > summary:hover::after { color: #ff7a18; }
+        details.qa .ans {
+            margin-top: 0.7rem;
+            color: #888888;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 60ch;
+        }
+    </style>
+</head>
+<body class="bg-bg text-fg antialiased">
+
+    <main class="max-w-3xl mx-auto px-6 py-16 md:py-20">
+
+        <!-- Top -->
+        <div class="flex items-center justify-between mb-16 fade-in">
+            <a href="/" class="eyebrow link">← rollins.io</a>
+            <span class="eyebrow">workshop</span>
+        </div>
+
+        <!-- Hero -->
+        <header class="mb-20">
+            <div class="eyebrow mb-4 fade-in">
+                <span class="text-accent">●</span>&nbsp;&nbsp;Live Working Session · WORKSHOP_DATE · 09:00 PT
+            </div>
+            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
+                Agents building Agents
+            </h1>
+            <p class="text-fg/90 text-lg leading-relaxed mb-3 max-w-prose fade-in" style="animation-delay:0.1s">
+                Two hours, live. 60 minutes of code on screen — Python execution sandbox, an LLM loop, RAG memory, extensible tools — then 60 minutes of deep Q&amp;A.
+            </p>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose fade-in" style="animation-delay:0.12s">
+                Stop just prompting LLMs. Watch agents build an agent harness — then adapt it to your stack.
+            </p>
+            <div class="flex flex-wrap gap-3 fade-in" style="animation-delay:0.15s">
+                <a href="#pricing" class="btn btn-primary">Get a seat <span aria-hidden="true">→</span></a>
+                <a href="#details" class="btn btn-ghost">Read the brief</a>
+            </div>
+        </header>
+
+        <!-- Curriculum -->
+        <section id="details" class="mb-20">
+            <div class="eyebrow mb-3">Curriculum</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Two hours, one harness, real code on screen.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                This isn't a slide deck. We spend the first hour building together, then a full hour of deep Q&amp;A. The starter codebase is shared at the start of the session — your environment just needs to be ready (see <a href="#requirements" class="link">Requirements</a>).
+            </p>
+
+            <div class="step"><span class="idx">01</span><div><div class="title">The Sandbox</div><div class="body">A Python execution environment running in Docker.</div></div></div>
+            <div class="step"><span class="idx">02</span><div><div class="title">The Loop</div><div class="body">Wiring an LLM to write, run, and read code output.</div></div></div>
+            <div class="step"><span class="idx">03</span><div><div class="title">The Memory</div><div class="body">A RAG database so the agent can look things up.</div></div></div>
+            <div class="step"><span class="idx">04</span><div><div class="title">The Handoff</div><div class="body">Extra tools, then adapting the harness for your stack.</div></div></div>
+        </section>
+
+        <!-- Logistics -->
+        <section class="mb-20">
+            <div class="eyebrow mb-3">Logistics</div>
+            <div class="card p-6">
+                <div class="kv"><span class="k">Date</span><span class="v">WORKSHOP_DATE</span></div>
+                <div class="kv"><span class="k">Start</span><span class="v">09:00 PT · 12:00 ET</span></div>
+                <div class="kv"><span class="k">International</span><span class="v">17:00 UK · 21:30 IST</span></div>
+                <div class="kv"><span class="k">Format</span><span class="v">60m build + 60m Q&amp;A</span></div>
+                <div class="kv"><span class="k">Venue</span><span class="v">Zoom (link on purchase)</span></div>
+                <div class="kv"><span class="k">Replay</span><span class="v">Included</span></div>
+            </div>
+        </section>
+
+        <!-- Requirements -->
+        <section id="requirements" class="mb-20">
+            <div class="eyebrow mb-3">Prerequisites</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Show up ready.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                We're building for the full first hour, so your environment has to be ready when we kick off. We won't have time to help you set up live.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="card p-5">
+                    <div class="eyebrow mb-3">A · What you should know</div>
+                    <ul class="space-y-2.5 text-sm leading-relaxed">
+                        <li class="text-fg/90"><span class="text-fg font-medium">Python</span> and/or <span class="text-fg font-medium">JavaScript / TypeScript</span> — comfortable reading and writing code, and with how API calls work.</li>
+                        <li class="text-fg/90">Access to an LLM. Strongly preferred: <span class="text-fg font-medium">Claude Code</span>, <span class="text-fg font-medium">Codex</span>, or <span class="text-fg font-medium">Cursor</span>.</li>
+                    </ul>
+                </div>
+
+                <div class="card p-5">
+                    <div class="eyebrow mb-3">B · Install in advance</div>
+                    <ul class="space-y-2.5 text-sm leading-relaxed">
+                        <li class="text-fg/90"><span class="text-fg font-medium">Docker</span>, installed and running.</li>
+                        <li class="text-fg/90">A working <span class="text-fg font-medium">Python</span> toolchain — <code class="font-mono text-xs text-accent">python</code> + <code class="font-mono text-xs text-accent">pip</code> or <code class="font-mono text-xs text-accent">uv</code>.</li>
+                        <li class="text-fg/90">A working <span class="text-fg font-medium">Node.js</span> toolchain — <code class="font-mono text-xs text-accent">node</code> + <code class="font-mono text-xs text-accent">npm</code> / <code class="font-mono text-xs text-accent">pnpm</code> / <code class="font-mono text-xs text-accent">bun</code>.</li>
+                        <li class="text-fg/90"><span class="text-fg font-medium">Git</span>, for cloning the starter codebase.</li>
+                        <li class="text-fg/90">An <span class="text-fg font-medium">API key with credits</span> on whichever LLM provider you'll use.</li>
+                    </ul>
+                    <p class="text-muted text-xs mt-4 pt-3 border-t border-border leading-relaxed">
+                        <span class="text-accent">Heads up</span> — the sandbox and RAG db each pull a Docker image. A few GB of free disk and some RAM headroom makes things smoother.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section id="pricing" class="mb-20">
+            <div class="eyebrow mb-3">Tickets</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Pricing that makes sense globally.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                I want to make this accessible globally while keeping the session high-signal. Choose the tier that fits your situation.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="tier">
+                    <div class="tier-eyebrow"><span class="label">Supported</span><span>Student · Global</span></div>
+                    <div class="price"><span class="currency">$</span>29</div>
+                    <p class="blurb">For students, new grads, or builders in countries where $99 doesn't map to local purchasing power.</p>
+                    <ul>
+                        <li>Live access + Q&amp;A</li>
+                        <li>Starter framework code</li>
+                        <li>Unlisted replay + notes</li>
+                    </ul>
+                    <a href="STRIPE_LINK_SUPPORTED" class="btn btn-ghost">Get supported ticket</a>
+                </div>
+
+                <div class="tier featured">
+                    <div class="tier-eyebrow"><span class="label">Standard · Recommended</span><span>Engineer · Founder</span></div>
+                    <div class="price"><span class="currency">$</span>99</div>
+                    <p class="blurb">For most professional engineers, builders, and technical founders.</p>
+                    <ul>
+                        <li>Live access + Q&amp;A</li>
+                        <li>Starter framework code</li>
+                        <li>Unlisted replay + notes</li>
+                    </ul>
+                    <a href="STRIPE_LINK_STANDARD" class="btn btn-primary">Get standard ticket</a>
+                </div>
+
+                <div class="tier">
+                    <div class="tier-eyebrow"><span class="label">Supporter</span><span>Patron</span></div>
+                    <div class="price"><span class="currency">$</span>199</div>
+                    <p class="blurb">For those who want to support my work and subsidize access for others.</p>
+                    <ul>
+                        <li>All Standard access</li>
+                        <li>Sponsors 2 Supported seats</li>
+                        <li>Unlocks a free 60m New Grad Clinic if we hit 10 supporters</li>
+                    </ul>
+                    <a href="STRIPE_LINK_SUPPORTER" class="btn btn-ghost">Become a supporter</a>
+                </div>
+            </div>
+
+            <!-- Express interest -->
+            <div class="card p-6 mt-6 grid md:grid-cols-12 gap-4 items-center">
+                <div class="md:col-span-7">
+                    <div class="eyebrow mb-2">Not ready to commit?</div>
+                    <h3 class="text-lg font-semibold mb-1.5">Get the early-bird heads-up.</h3>
+                    <p class="text-muted text-sm leading-relaxed">Drop me a line and I'll add you to the list. You'll get the date confirmation, the starter framework preview, and a heads-up before tickets go live.</p>
+                </div>
+                <div class="md:col-span-5 flex flex-col gap-3 md:items-end">
+                    <a href="mailto:WORKSHOP_EMAIL?subject=Workshop%20interest%20%E2%80%94%20Agents%20Building%20Agents&body=Hi%2C%0A%0AI%27d%20like%20to%20be%20notified%20about%20the%20Agents%20Building%20Agents%20workshop.%0A%0AName%3A%0ATimezone%3A%0ANotes%2Fquestions%3A%0A%0AThanks%21" class="btn btn-ghost">Express interest</a>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-muted">or email</span>
+                        <a href="mailto:WORKSHOP_EMAIL" id="workshop-email" class="link font-mono text-xs">WORKSHOP_EMAIL</a>
+                        <button type="button" onclick="copyWorkshopEmail(this)" class="font-mono text-xs px-2 py-1 border border-border rounded text-muted hover:text-accent hover:border-dim transition">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-20">
+            <div class="eyebrow mb-3">FAQ</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-6">Questions, asked &amp; answered.</h2>
+
+            <details class="qa">
+                <summary>Do I need to be a Python expert?</summary>
+                <div class="ans">No. Basic Python and/or JavaScript / TypeScript is enough — comfortable reading and writing code and with how API calls work. You don't need to be a machine learning engineer.</div>
+            </details>
+            <details class="qa">
+                <summary>Will you review my specific project?</summary>
+                <div class="ans">During the 60-minute Q&amp;A, you can ask specific questions about adapting this framework to your use case. Submit your questions early (link provided after checkout) to ensure we get to them.</div>
+            </details>
+            <details class="qa">
+                <summary>What happens after I pay?</summary>
+                <div class="ans">You'll be redirected to a page with the calendar invite and a quick form to submit your advance questions. The starter codebase is shared at the start of the session — make sure your environment is ready before then (see <a href="#requirements" class="link">Requirements</a>).</div>
+            </details>
+            <details class="qa">
+                <summary>What if I can't make it live?</summary>
+                <div class="ans">All tiers include the unlisted replay and notes. The Q&amp;A questions you submit in advance are answered on the recording even if you watch async.</div>
+            </details>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-dim text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <span>Δ-V Workshop · <a href="/" class="link">rollins.io</a></span>
+            <span>© 2026</span>
+        </footer>
+
+    </main>
+
+    <script>
+        function copyWorkshopEmail(btn) {
+            const email = document.getElementById('workshop-email').textContent.trim();
+            navigator.clipboard.writeText(email).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Copied';
+                btn.disabled = true;
+                setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1500);
+            });
+        }
+    </script>
+
+</body>
+</html>
