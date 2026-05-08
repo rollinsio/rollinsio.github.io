@@ -9,12 +9,6 @@
     <meta property="og:description" content="Builder, engineer, and host of the Δ-V live-build workshop.">
     <meta property="og:url" content="https://rollins.io/">
     <meta name="twitter:card" content="summary">
-    <!--
-      CONFIG — placeholders to fill before publishing:
-        ROLLINS_BIO    one-sentence bio under the name
-        WORKSHOP_DATE  e.g. Saturday, May 9   (mirrors workshop/index.html)
-        GITHUB_URL, WRITING_URL, YOUTUBE_URL, X_URL, LINKEDIN_URL, CAL_URL, EMAIL
-    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -28,6 +22,17 @@
 
     <main class="max-w-prose mx-auto px-6 py-16 md:py-24">
 
+        <!-- Top nav -->
+        <nav class="text-center mb-10 fade-in">
+            <div class="eyebrow flex justify-center items-center gap-3">
+                <span class="text-fg">home</span>
+                <span class="text-dim">·</span>
+                <a href="/workshop/" class="link">workshop</a>
+                <span class="text-dim">·</span>
+                <a href="/links/" class="link">links</a>
+            </div>
+        </nav>
+
         <!-- Identity -->
         <header class="text-center mb-16 fade-in">
             <div class="avatar mx-auto mb-4" aria-hidden="true">MR</div>
@@ -37,9 +42,15 @@
         <!-- Hero -->
         <section class="mb-16">
             <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-5 fade-in">Michael Rollins</h1>
-            <p class="text-fg/90 text-lg leading-relaxed mb-3 fade-in" style="animation-delay:0.05s">
-                ROLLINS_BIO.
+            <p class="text-fg/90 text-lg leading-relaxed mb-5 fade-in" style="animation-delay:0.05s">
+                Pragmatic engineer and CTO shaping best practices for agentic engineering.
             </p>
+            <ul class="text-fg/90 leading-relaxed mb-5 space-y-1.5 fade-in" style="animation-delay:0.08s">
+                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Scaled Flurry by Yahoo to 5 billion daily sessions</span></li>
+                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Now: agentic systems at Rellify and FD</span></li>
+                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Early AI at Outlier</span></li>
+                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>iOS, Android, backend, frontend, infrastructure</span></li>
+            </ul>
             <p class="text-muted text-base leading-relaxed fade-in" style="animation-delay:0.1s">
                 Builder, engineer, and host of the Δ-V live-build workshop.
             </p>
@@ -49,11 +60,11 @@
         <section class="mb-16 fade-in" style="animation-delay:0.15s">
             <a href="/workshop/" class="featured lg">
                 <div class="top">
-                    <span class="badge">● UPCOMING WORKSHOP · WORKSHOP_DATE</span>
+                    <span class="badge">● UPCOMING WORKSHOP · Thursday, May 14</span>
                     <span class="arrow">→</span>
                 </div>
                 <div class="title">Agents building Agents</div>
-                <div class="meta">Two hours, live. 60 minutes of code on screen — Python sandbox, agent loop, RAG memory — then 60 of Q&amp;A.</div>
+                <div class="meta">Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.</div>
             </a>
         </section>
 
@@ -61,39 +72,29 @@
         <section class="mb-16 fade-in" style="animation-delay:0.2s">
             <div class="eyebrow mb-4">Elsewhere</div>
 
-            <a href="GITHUB_URL" class="row-link">
+            <a href="https://github.com/rollinsio" class="row-link">
                 <span class="label">GitHub</span>
-                <span class="desc">Open source, experiments, agent frameworks</span>
+                <span class="desc">Starter AI projects and other work</span>
                 <span class="arrow">→</span>
             </a>
-            <a href="WRITING_URL" class="row-link">
-                <span class="label">Writing</span>
-                <span class="desc">Long-form on agents, tooling, and craft</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="YOUTUBE_URL" class="row-link">
+            <a href="https://www.youtube.com/@MichaelRollins" class="row-link">
                 <span class="label">YouTube</span>
-                <span class="desc">Talks, demos, and recorded sessions</span>
+                <span class="desc">Former drone content, upcoming AI content</span>
                 <span class="arrow">→</span>
             </a>
-            <a href="X_URL" class="row-link">
-                <span class="label">X / Twitter</span>
-                <span class="desc">Short notes, build updates, replies</span>
+            <a href="https://www.youtube.com/@WillAISnapThat" class="row-link">
+                <span class="label">Will AI Snap That</span>
+                <span class="desc">A podcast about AI and your engineering job</span>
                 <span class="arrow">→</span>
             </a>
-            <a href="LINKEDIN_URL" class="row-link">
+            <a href="https://www.instagram.com/rollins.io/" class="row-link">
+                <span class="label">Instagram</span>
+                <span class="desc">The hot takes that cause just a bit of rage</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://www.linkedin.com/in/rollinsmichael/" class="row-link">
                 <span class="label">LinkedIn</span>
-                <span class="desc">Background, work history, intros</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="CAL_URL" class="row-link">
-                <span class="label">Book a call</span>
-                <span class="desc">30 minutes, anything you want to ask</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="mailto:EMAIL" class="row-link">
-                <span class="label">Email</span>
-                <span class="desc">EMAIL</span>
+                <span class="desc">Professional work</span>
                 <span class="arrow">→</span>
             </a>
         </section>

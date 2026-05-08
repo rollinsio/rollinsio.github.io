@@ -102,7 +102,12 @@ When editing `workshop/index.html`:
 In `workshop/index.html`:
 - `WORKSHOP_DATE` — hero eyebrow, Logistics card.
 - `WORKSHOP_EMAIL` — "Express interest" `mailto:` link, the plain-text fallback, copy button. Should be a Google Workspace alias on `rollins.io` (no inbound server needed — site stays static).
-- `STRIPE_LINK_SUPPORTED` / `STRIPE_LINK_STANDARD` / `STRIPE_LINK_SUPPORTER` — Stripe Payment Link URLs (one per tier, generated in the Stripe Dashboard). Payment Links keep the site truly static: no Stripe keys live in the repo. Only switch to Stripe.js if a tier needs custom amounts or embedded checkout — and even then only the publishable key would be added (the secret key must never appear in this repo).
+
+Stripe Payment Links are live — Payment Links keep the site truly static (no Stripe keys in the repo). Only switch to Stripe.js if a tier needs custom amounts or embedded checkout — and even then only the publishable key would be added (the secret key must never appear in this repo). Current links + caps (sum to a 20-seat cap, enforced via Stripe `restrictions.completed_sessions.limit`):
+  - Supported $29 — `plink_1TUuMdGpOisb6fvvgQcc1fHP`, cap 5, `https://buy.stripe.com/cNi4gz5Z1eED1uC5YE6c000`
+  - Standard $99 — `plink_1TUuMuGpOisb6fvvEr33r45w`, cap 9, `https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001`
+  - Supporter $199 — `plink_1TUuMzGpOisb6fvvpAXyifIL`, cap 6, `https://buy.stripe.com/4gM4gzafh1RR4GOfze6c002`
+  Rebalance per-link caps in the Stripe Dashboard if demand surprises us — keep the sum at 20.
 
 In `index.html` (home) and `links/index.html`:
 - `ROLLINS_BIO` (home only)
