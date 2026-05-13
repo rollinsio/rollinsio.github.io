@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulting — Michael Rollins</title>
+    <meta name="description" content="Live working sessions for engineering leadership adopting agentic engineering. Onsite or remote, one or two days.">
+    <meta property="og:title" content="Bring agentic engineering to your team">
+    <meta property="og:description" content="Live working sessions for engineering leadership. Onsite or remote, one or two days.">
+    <meta property="og:url" content="https://rollins.io/consulting/">
+    <meta name="twitter:card" content="summary">
+    <!--
+      CONFIG — placeholders to fill before publishing:
+        CONSULTING_EMAIL  e.g. consulting@rollins.io (Google Workspace alias)
+
+      Format references that should stay in sync if edited:
+        - Hero subhead ("One or two days")
+        - Approach intro ("first day stands on its own")
+        - Format card (Length: One day, or one + one)
+        - Engagement cards (One-day / Two-day)
+        - FAQ ("Can you run this remotely?")
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/tokens.css">
+    <link rel="stylesheet" href="/shared/base.css">
+    <link rel="stylesheet" href="/shared/components.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/shared/tailwind-init.js"></script>
+    <style>
+        /* Engagement card — close cousin of .tier but without pricing emphasis. */
+        .engagement {
+            display: flex;
+            flex-direction: column;
+            background: #121212;
+            border: 1px solid #1f1f1f;
+            border-radius: 6px;
+            padding: 1.6rem;
+        }
+        .engagement.featured {
+            border-color: rgba(255,122,24,0.45);
+            background: linear-gradient(180deg, rgba(255,122,24,0.04), transparent 40%), #121212;
+        }
+        .engagement .eng-eyebrow {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 0.72rem;
+            color: #888888;
+            margin-bottom: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .engagement.featured .eng-eyebrow .label { color: #ff7a18; }
+        .engagement h3 { font-size: 1.25rem; font-weight: 600; color: #ededed; letter-spacing: -0.01em; margin-bottom: 0.6rem; }
+        .engagement .blurb { color: #888888; font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.2rem; }
+        .engagement ul { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
+        .engagement ul li { color: #ededed; font-size: 0.92rem; padding: 0.4rem 0; border-top: 1px solid #1f1f1f; }
+        .engagement ul li:first-child { border-top: none; }
+        .engagement .btn { width: 100%; justify-content: center; }
+
+        /* Day 2 divider inside the .step list. */
+        .day-divider {
+            margin: 1.6rem 0 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .day-divider::after { content: ""; flex: 1; height: 1px; background: #1f1f1f; }
+    </style>
+</head>
+<body class="bg-bg text-fg antialiased">
+
+    <main class="max-w-3xl mx-auto px-6 py-16 md:py-20">
+
+        <!-- Top nav -->
+        <nav class="text-center mb-10 fade-in">
+            <div class="eyebrow flex justify-center items-center gap-3">
+                <a href="/" class="link">home</a>
+                <span class="text-dim">·</span>
+                <a href="/workshop/" class="link">workshop</a>
+                <span class="text-dim">·</span>
+                <span class="text-fg">consulting</span>
+                <span class="text-dim">·</span>
+                <a href="/links/" class="link">links</a>
+            </div>
+        </nav>
+
+        <!-- Identity -->
+        <header class="text-center mb-14 fade-in">
+            <a href="/" aria-label="Back to rollins.io" class="avatar mx-auto mb-3">MR</a>
+            <div class="eyebrow">consulting · rollins.io</div>
+        </header>
+
+        <!-- Hero -->
+        <header class="mb-20">
+            <div class="eyebrow mb-4 fade-in">
+                <span class="text-accent">●</span>&nbsp;&nbsp;For Engineering Leadership · Onsite or Remote
+            </div>
+            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
+                Bring agentic engineering to your team.
+            </h1>
+            <p class="text-fg/90 text-lg leading-relaxed mb-4 max-w-prose fade-in" style="animation-delay:0.1s">
+                Live working sessions for engineering leadership. One or two days, onsite or remote.
+            </p>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose fade-in" style="animation-delay:0.12s">
+                Your team builds something real with agentic tools. The structural pain that's been hiding surfaces. You walk away with a private debrief on team dynamics and which engineers are positioned to lead in this new model.
+            </p>
+            <div class="flex flex-wrap gap-3 fade-in" style="animation-delay:0.15s">
+                <a href="#engage" class="btn btn-primary">Get in touch <span aria-hidden="true">→</span></a>
+                <a href="#approach" class="btn btn-ghost">Read the approach</a>
+            </div>
+        </header>
+
+        <!-- The shift -->
+        <section id="why" class="mb-20">
+            <div class="eyebrow mb-3">The shift</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Coding stops being the bottleneck. Everything underneath it shows up.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                Adopting agentic engineering isn't a tooling decision — it's a leadership decision. When AI takes coding off the critical path, the limits of your planning, infrastructure, trust models, and team composition surface fast. Most orgs are not ready for what they expose.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Trust models break</div>
+                    <p class="text-muted text-sm leading-relaxed">Senior code review can't keep up with agentic velocity. Trust has to move to tests, multi-concern AI review, and deterministic build gates.</p>
+                </div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Bottlenecks migrate</div>
+                    <p class="text-muted text-sm leading-relaxed">Velocity exposes planning, ticketing, and infrastructure as the next limiters. Engineers idle on Jira while DSO chokes.</p>
+                </div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">The deck reshuffles</div>
+                    <p class="text-muted text-sm leading-relaxed">When coding skill is leveled, broad thinkers and self-starters rise. Some engineers will resist hard enough that reassignment is on the table.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Approach -->
+        <section id="approach" class="mb-20">
+            <div class="eyebrow mb-3">Approach</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">A working session, not a slide deck.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                The first day stands on its own: your team builds, the room talks, the structural pain surfaces, and you walk out with a private read on the team. A second day extends into a guided hackathon and a deep-dive scoped to whatever Day 1 surfaces.
+            </p>
+
+            <div>
+                <div class="step"><span class="idx">01</span><div><div class="title">The Shock</div><div class="body">A one-hour build challenge with a real prize. Engineers ship something concrete with agentic tools. The room sees what's now possible — viscerally, not in theory.</div></div></div>
+                <div class="step"><span class="idx">02</span><div><div class="title">Trust in Engineering</div><div class="body">A facilitated discussion that reframes how you trust code. From "a senior engineer will catch it in review" to "what infrastructure would let me ship a junior's code unsupervised?" Tests, AI reviews, deterministic build gates.</div></div></div>
+                <div class="step"><span class="idx">03</span><div><div class="title">The Pain Snake</div><div class="body">A structured exercise that surfaces the structural pain that's been hiding. Group catharsis, plus a prioritized list of engineering priorities that weren't visible to leadership yesterday.</div></div></div>
+                <div class="step"><span class="idx">04</span><div><div class="title">Agentic Mechanics</div><div class="body">Hands-on patterns: how to structure ideas for the model, how to work with non-determinism, how to run a daily workflow that compounds. Prompt engineering demystified — talk to the model about the prompt.</div></div></div>
+                <div class="step"><span class="idx">05</span><div><div class="title">Leadership Debrief</div><div class="body">A private session at the end of the day. Observations on team dynamics, individual standouts, friction points, and concrete recommendations on team structure. Followed by a written report.</div></div></div>
+            </div>
+
+            <div class="day-divider">
+                <span class="eyebrow">Day 2 · optional</span>
+            </div>
+
+            <div>
+                <div class="step"><span class="idx">06</span><div><div class="title">Guided Hackathon</div><div class="body">An aggressively-scoped goal with live coaching. Engineers pushed past where they think reasonable ends — that's the point. About half a day.</div></div></div>
+                <div class="step"><span class="idx">07</span><div><div class="title">Custom Deep-Dive</div><div class="body">Scoped from Day 1 observations. Candidates: fine-tuning workshop on your hardware, infrastructure or DSO acceleration, build-pipeline design, restructuring of dev environments, or a team-specific challenge surfaced in the Pain Snake.</div></div></div>
+            </div>
+        </section>
+
+        <!-- Outcomes -->
+        <section id="outcomes" class="mb-20">
+            <div class="eyebrow mb-3">Outcomes</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-8">What changes after the session.</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Immediate · in-session</div>
+                    <ul class="space-y-2 text-sm leading-relaxed text-fg/90">
+                        <li>Engineers ship a working app in under an hour with agentic tools.</li>
+                        <li>Leadership gets a clear mental model of the new trust framework.</li>
+                        <li>A prioritized list of structural pain — items that have been hiding.</li>
+                    </ul>
+                </div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Short-term · 30 days</div>
+                    <ul class="space-y-2 text-sm leading-relaxed text-fg/90">
+                        <li>5–10× velocity on infrastructure, containerization, and pipeline tasks.</li>
+                        <li>Testing and automated review begin to replace manual code review as the primary trust mechanism.</li>
+                        <li>First fine-tuned models deployed where on-prem GPU capacity allows.</li>
+                    </ul>
+                </div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Medium-term · 30–90 days</div>
+                    <ul class="space-y-2 text-sm leading-relaxed text-fg/90">
+                        <li>Team right-sizing becomes apparent. Output of 30 engineers is achievable with 5–6 in this model.</li>
+                        <li>Planning shifts from tickets to feature-level assignment. Engineers get discretion.</li>
+                        <li>Downstream bottlenecks (DSO, infra) get addressed before they choke velocity.</li>
+                    </ul>
+                </div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-2">Strategic</div>
+                    <ul class="space-y-2 text-sm leading-relaxed text-fg/90">
+                        <li>An engineering culture that selects for broad thinkers and self-starters.</li>
+                        <li>Soft skills, design sense, and domain knowledge become force multipliers.</li>
+                        <li>Sovereign or near-sovereign AI capability where compute and constraints allow it.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Format -->
+        <section id="format" class="mb-20">
+            <div class="eyebrow mb-3">Format</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-6">How it runs.</h2>
+            <div class="card p-6">
+                <div class="kv"><span class="k">Length</span><span class="v">One day, or one + one</span></div>
+                <div class="kv"><span class="k">Mode</span><span class="v">Onsite (preferred) or remote</span></div>
+                <div class="kv"><span class="k">Team size</span><span class="v">Up to ~30 engineers · larger orgs split into cohorts</span></div>
+                <div class="kv"><span class="k">Pre-session</span><span class="v">Team dossier · model access resolved · harness pre-installed</span></div>
+                <div class="kv"><span class="k">Deliverable</span><span class="v">Written leadership debrief with team-structure recommendations</span></div>
+                <div class="kv"><span class="k">Confidentiality</span><span class="v">Mutual NDA on request</span></div>
+            </div>
+        </section>
+
+        <!-- Engagement options -->
+        <section id="engage" class="mb-20">
+            <div class="eyebrow mb-3">Engagement</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">How we work together.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                Engagements are scoped per team. Pricing depends on team size, mode (onsite/remote), travel, and Day 2 scope. Reach out and I'll come back with a fit-check and a quote within a few days.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="engagement featured">
+                    <div class="eng-eyebrow"><span class="label">One-Day · Most Common</span><span>Onsite or Remote</span></div>
+                    <h3>Working session</h3>
+                    <p class="blurb">The full Day 1 itinerary. Build challenge, trust framework, pain snake, agentic mechanics, leadership debrief.</p>
+                    <ul>
+                        <li>Up to ~30 engineers</li>
+                        <li>Onsite or remote (Zoom)</li>
+                        <li>Private leadership debrief</li>
+                        <li>Written report with team-structure recommendations</li>
+                    </ul>
+                    <a href="mailto:CONSULTING_EMAIL?subject=Consulting%20inquiry%20%E2%80%94%20One-day%20working%20session&body=Hi%20Mike%2C%0A%0AI%27d%20like%20to%20talk%20about%20a%20one-day%20working%20session%20for%20our%20team.%0A%0ACompany%2Forg%3A%0ATeam%20size%3A%0AOnsite%20or%20remote%3A%0ATimeframe%3A%0AContext%2Fpain%3A%0A%0AThanks%21" class="btn btn-primary">Inquire about a one-day</a>
+                </div>
+
+                <div class="engagement">
+                    <div class="eng-eyebrow"><span class="label">Two-Day · Deep Dive</span><span>Onsite preferred</span></div>
+                    <h3>Working session + build</h3>
+                    <p class="blurb">Day 1 in full, plus a guided hackathon and a custom deep-dive scoped to your team's specific pain points.</p>
+                    <ul>
+                        <li>Everything in the one-day</li>
+                        <li>Aggressively-scoped guided hackathon</li>
+                        <li>Day 2 afternoon: fine-tuning, infra, or other priority</li>
+                        <li>Tailored to your stack and constraints</li>
+                    </ul>
+                    <a href="mailto:CONSULTING_EMAIL?subject=Consulting%20inquiry%20%E2%80%94%20Two-day%20engagement&body=Hi%20Mike%2C%0A%0AI%27d%20like%20to%20talk%20about%20a%20two-day%20engagement%20for%20our%20team.%0A%0ACompany%2Forg%3A%0ATeam%20size%3A%0AOnsite%20or%20remote%3A%0ATimeframe%3A%0AKnown%20pain%20points%3A%0A%0AThanks%21" class="btn btn-ghost">Inquire about two-day</a>
+                </div>
+            </div>
+
+            <p class="text-muted text-sm leading-relaxed mt-6 max-w-prose">
+                Looking for ongoing advisory, embedded engineering support, or a multi-team rollout? <a href="mailto:CONSULTING_EMAIL?subject=Consulting%20inquiry%20%E2%80%94%20Ongoing%20advisory" class="link">Let's scope it</a>.
+            </p>
+        </section>
+
+        <!-- Inquiry -->
+        <section id="contact" class="mb-20">
+            <div class="card p-6 grid md:grid-cols-12 gap-4 items-center">
+                <div class="md:col-span-7">
+                    <div class="eyebrow mb-2">Get in touch</div>
+                    <h3 class="text-lg font-semibold mb-1.5">Tell me about your team.</h3>
+                    <p class="text-muted text-sm leading-relaxed">Drop me a line with team size, current state, and what's pushing you toward this. I'll come back within a few days with a fit-check and a proposed shape for the engagement.</p>
+                </div>
+                <div class="md:col-span-5 flex flex-col gap-3 md:items-end">
+                    <a href="mailto:CONSULTING_EMAIL?subject=Consulting%20inquiry&body=Hi%20Mike%2C%0A%0ACompany%2Forg%3A%0ATeam%20size%3A%0ACurrent%20state%20with%20AI%20tooling%3A%0AWhat%27s%20pushing%20us%20to%20this%3A%0ATimeframe%3A%0A%0AThanks%21" class="btn btn-primary">Send an inquiry</a>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-muted">or email</span>
+                        <a href="mailto:CONSULTING_EMAIL" id="consulting-email" class="link font-mono text-xs">CONSULTING_EMAIL</a>
+                        <button type="button" onclick="copyConsultingEmail(this)" class="font-mono text-xs px-2 py-1 border border-border rounded text-muted hover:text-accent hover:border-dim transition">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-20">
+            <div class="eyebrow mb-3">FAQ</div>
+            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-6">Questions, asked &amp; answered.</h2>
+
+            <details class="qa">
+                <summary>Is this for engineering leadership or for individual engineers?</summary>
+                <div class="ans">Both. The session is run for the engineering team, but the leadership debrief and structural recommendations are for you. The strongest engagements have an engaged audience and an engaged sponsor.</div>
+            </details>
+            <details class="qa">
+                <summary>Does my team need to be using AI tools already?</summary>
+                <div class="ans">No. Some teams arrive having barely tried it; some are already deep. The shock-and-build exercise calibrates everyone to the same starting line within an hour.</div>
+            </details>
+            <details class="qa">
+                <summary>Can you run this remotely?</summary>
+                <div class="ans">Yes. Onsite is preferred — a chunk of the value comes from observing team dynamics during unstructured time, and that's harder over Zoom. Remote works well for distributed teams and is often the right call for a Day 1 pilot before committing to onsite.</div>
+            </details>
+            <details class="qa">
+                <summary>What if our environment restricts model access?</summary>
+                <div class="ans">That's a feature, not a bug. Defense, healthcare, and other constrained environments can stand up self-hosted open-source models on existing GPU infrastructure. The constraint usually points toward a sovereign capability that most peers are years away from.</div>
+            </details>
+            <details class="qa">
+                <summary>How do you handle confidentiality and NDAs?</summary>
+                <div class="ans">Mutual NDA on request before any pre-work. The leadership debrief and written report are private to you and your designated leadership group.</div>
+            </details>
+            <details class="qa">
+                <summary>What's the team-size sweet spot?</summary>
+                <div class="ans">Up to about 30 engineers in a single session. Larger orgs typically split into two cohorts run on consecutive days, sharing the leadership debrief.</div>
+            </details>
+            <details class="qa">
+                <summary>How far out do I need to book?</summary>
+                <div class="ans">Usually 4–8 weeks for onsite, less for remote. Faster turnaround is possible for the right engagement — ask.</div>
+            </details>
+            <details class="qa">
+                <summary>What if some of our engineers will resist?</summary>
+                <div class="ans">Some will. Agentic engineering tells people that what they believe is "good engineering" is changing, and that's a hit to identity. The leadership debrief includes candid observations on which engineers are positioned to lead in this new model and where friction is likely to emerge.</div>
+            </details>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-dim text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <span>Consulting · <a href="/" class="link">rollins.io</a></span>
+            <span>© 2026</span>
+        </footer>
+
+    </main>
+
+    <script>
+        function copyConsultingEmail(btn) {
+            const email = document.getElementById('consulting-email').textContent.trim();
+            navigator.clipboard.writeText(email).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Copied';
+                btn.disabled = true;
+                setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1500);
+            });
+        }
+    </script>
+
+</body>
+</html>

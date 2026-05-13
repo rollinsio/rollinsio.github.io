@@ -4,10 +4,11 @@ Guidance for Claude Code when editing this repo.
 
 ## What this repo is
 
-The single GitHub Pages site for `rollins.io`. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are three pages:
+The single GitHub Pages site for `rollins.io`. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are four pages:
 
 - `/` — `index.html` (Michael Rollins · home)
 - `/workshop/` — `workshop/index.html` (Agents Building Agents live-build session)
+- `/consulting/` — `consulting/index.html` (engineering-leadership working sessions / consulting offering)
 - `/links/` — `links/index.html` (linktree-style stacked-button page for sharing in social bios)
 
 The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollinsio/delta-v-workshop`) that is now just a redirect stub. Do not edit content there.
@@ -23,10 +24,11 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 - Background `#0a0a0a`, surface `#121212`, border `#1f1f1f`, foreground `#ededed`, muted `#888888`, dim `#5a5a5a`.
 - Single accent: ember orange `#ff7a18`, used sparingly — primary CTA, hover states, "live" status dot. Most of the page is neutral.
 - Card / button / featured radius is **6px** site-wide. Interactive cards (`a.card`, `.link-btn`, `.featured`, `.btn`) lift `translateY(-1px)` on hover with an ember border accent. Non-interactive cards just shift to a slightly lighter border on hover.
-- All three pages share the same identity header: a centered `.avatar` gradient circle with "MR" initials over a small `eyebrow` mark. The container width and body layout differ by page purpose:
-  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Big left-aligned `text-4xl md:text-5xl` h1, multi-paragraph hero, ember-tinted `.featured.lg` workshop callout, then a `.row-link` directory of "Elsewhere" links. This is the front door — generous spacing, breathing room.
-  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, ember-tinted `.featured` workshop tile, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
+- All four pages share the same identity header: a centered `.avatar` gradient circle with "MR" initials over a small `eyebrow` mark. The container width and body layout differ by page purpose:
+  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Big left-aligned `text-4xl md:text-5xl` h1, multi-paragraph hero, two stacked ember-tinted `.featured.lg` callouts (workshop, then consulting), then a `.row-link` directory of "Elsewhere" links. This is the front door — generous spacing, breathing room.
+  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, two stacked ember-tinted `.featured` tiles (workshop, then consulting), then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
   - **`/workshop/`** — content-dense at `max-w-3xl`. Same centered `.avatar` identity header (the avatar is the back-link to `/`), then editorial hero, curriculum, logistics, requirements, pricing tiers, FAQ.
+  - **`/consulting/`** — content-dense at `max-w-3xl`. Same identity header. Sections: hero, "the shift" (3-card grid), Approach (Day 1 + optional Day 2 `.step` itinerary), Outcomes (4-card grid), Format (`.kv` card), Engagement (two `.engagement` cards — page-specific style, parallel to `.tier`), inquiry, FAQ. No fixed date — evergreen offer driven by `mailto:` inquiry.
 - No grain, no glow, no italic flourishes, no marginalia, no `§ XX` numbering, no rule-with-label dividers, no "Vol. 01" framing. Minimal animation: a single `fade-in` on each block, no stagger cascade beyond small per-element `animation-delay`.
 
 ## Directory layout
@@ -36,14 +38,16 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 ├── CNAME                 rollins.io
 ├── index.html            home page (no page-specific CSS — all from /shared/)
 ├── workshop/
-│   └── index.html        workshop page (page-only CSS: .step, .tier, details.qa)
+│   └── index.html        workshop page (page-only CSS: .tier — pricing-specific)
+├── consulting/
+│   └── index.html        consulting page (page-only CSS: .engagement, .day-divider)
 ├── links/
 │   └── index.html        share-targeted link landing (no page-specific CSS — all from /shared/)
 └── shared/
     ├── tailwind-init.js  shared tailwind.config — do not duplicate
     ├── tokens.css        body bg/fg, font, ::selection
     ├── base.css          .eyebrow, .link, .row-link, .card (+ a.card lift hover), .fade-in / @keyframes fade-in, reduced-motion guard
-    └── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .featured.lg modifier), .avatar
+    └── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .featured.lg modifier), .step, details.qa, .avatar
 ```
 
 ## Editing rules
@@ -51,7 +55,7 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 - **Tokens, shared utilities, the fade-in animation, and the Tailwind config live in `/shared/`.** Pages own only their page-specific CSS, inlined in `<style>`.
 - **Never duplicate a class definition between a page and `/shared/`.** If two pages need the same class, move it to `base.css` (always-loaded) or `components.css` (opt-in).
 - Tailwind utility classes from the shared color/font config (`bg-bg`, `text-fg`, `text-muted`, `text-accent`, `border-border`, `bg-surface`, `font-mono`, etc.) are used inline in markup — that's fine.
-- Cross-page links use absolute paths (`/`, `/workshop/`, `/links/`) so they work whether served from `rollins.io` root or a local `python3 -m http.server`.
+- Cross-page links use absolute paths (`/`, `/workshop/`, `/consulting/`, `/links/`) so they work whether served from `rollins.io` root or a local `python3 -m http.server`.
 
 ## Adding a new microsite
 
@@ -86,7 +90,7 @@ cd /Users/rollins/delta-v/web-github-pages/rollins-home
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/`, `http://localhost:8000/workshop/`, and `http://localhost:8000/links/`.
+Then open `http://localhost:8000/`, `http://localhost:8000/workshop/`, `http://localhost:8000/consulting/`, and `http://localhost:8000/links/`.
 
 ## Workshop page — content sync points
 
@@ -113,3 +117,18 @@ In `index.html` (home) and `links/index.html`:
 - `ROLLINS_BIO` (home only)
 - `WORKSHOP_DATE` (both — keep in sync with workshop page)
 - `GITHUB_URL`, `WRITING_URL`, `YOUTUBE_URL`, `X_URL`, `LINKEDIN_URL`, `CAL_URL`, `EMAIL` (both)
+
+## Consulting page — content sync points
+
+When editing `consulting/index.html`:
+
+- Sections: Hero, The shift (`#why`), Approach (`#approach`) with Day 1 steps 01–05 + optional Day 2 steps 06–07, Outcomes (`#outcomes`), Format (`#format`), Engagement (`#engage`) with two `.engagement` cards (One-day featured / Two-day), inquiry block (`#contact`), FAQ. The One-day uses `.engagement.featured` for accent border + tinted gradient and primary CTA — preserve that emphasis if restyling.
+- Engagement length must stay aligned across: hero subhead ("One or two days"), Approach intro ("first day stands on its own"), Format card (`Length: One day, or one + one`), Engagement cards (One-day / Two-day), and FAQ ("Can you run this remotely?").
+- The page is intentionally evergreen — no fixed date. All CTAs route to `mailto:CONSULTING_EMAIL`.
+
+## Placeholders to fill before launch (consulting)
+
+In `consulting/index.html`:
+- `CONSULTING_EMAIL` — every engagement-card CTA, the inquiry block `mailto:`, the plain-text fallback, and the copy button. Should be a Google Workspace alias on `rollins.io` (e.g. `consulting@rollins.io`).
+
+No Stripe Payment Links here — engagements are quoted per team. If a productized package ever ships, follow the workshop pattern: a Payment Link per package, no keys in the repo.

@@ -91,6 +91,49 @@
 .featured.lg .title { font-size: 1.5rem; line-height: 1.25; margin-bottom: 0.45rem; }
 .featured.lg .meta { font-size: 0.95rem; line-height: 1.6; }
 
+/* Curriculum / itinerary step — small mono index, then content. */
+.step {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid #1f1f1f;
+}
+.step:last-child { border-bottom: 1px solid #1f1f1f; }
+.step .idx { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.85rem; color: #888888; padding-top: 0.1rem; }
+.step .title { font-weight: 500; color: #ededed; margin-bottom: 0.15rem; }
+.step .body { color: #888888; font-size: 0.95rem; line-height: 1.55; }
+
+/* FAQ accordion — minimal. */
+details.qa { border-top: 1px solid #1f1f1f; padding: 1rem 0; }
+details.qa:last-of-type { border-bottom: 1px solid #1f1f1f; }
+details.qa > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: #ededed;
+    font-weight: 500;
+}
+details.qa > summary::-webkit-details-marker { display: none; }
+details.qa > summary::after {
+    content: "+";
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: #5a5a5a;
+    transition: color 0.15s ease;
+}
+details.qa[open] > summary::after { content: "−"; color: #ff7a18; }
+details.qa > summary:hover::after { color: #ff7a18; }
+details.qa .ans {
+    margin-top: 0.7rem;
+    color: #888888;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 60ch;
+}
+
 /* Identity avatar — gradient circle with initials. */
 .avatar {
     width: 4rem;
