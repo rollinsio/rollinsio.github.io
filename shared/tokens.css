@@ -1,9 +1,35 @@
-html, body { background: #0a0a0a; color: #ededed; }
+/* Aurora Live tokens. Defaults to the violet palette; JS swaps these
+   on palette change (see /shared/aurora-live.js). All component CSS
+   reads from these vars, so any palette change retunes the entire UI. */
+
+:root {
+    --bg:       #0a0e1f;
+    --bg-rgb:   10 14 31;
+    --surface:  #121633;
+    --rule:     #1f254a;
+    --fg:       #f1f0ff;
+    --head:     #e8defd;
+    --muted:    #8b8db0;
+    --dim:      #5a5e80;
+    --accent:   #a78bfa;
+    --accent-rgb: 167 139 250;
+    --accent2:  #22d3ee;
+    --accent2-rgb: 34 211 238;
+
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html, body {
+    background: var(--bg);
+    color: var(--fg);
+}
+
 body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-::selection { background: #ff7a18; color: #0a0a0a; }
+::selection { background: var(--accent); color: var(--bg); }

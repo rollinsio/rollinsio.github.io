@@ -15,19 +15,27 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 ## Stack
 
 - Pure static HTML. No build system, no package manager, no tests.
-- Tailwind CSS via CDN (`https://cdn.tailwindcss.com`) with the shared `tailwind.config` defined in `/shared/tailwind-init.js`. Do not introduce a Tailwind build step or `tailwind.config.js` unless the site outgrows the CDN.
-- Google Fonts: **Inter** (sans display + body) + **JetBrains Mono** (eyebrow / mono accents).
+- Tailwind CSS via CDN (`https://cdn.tailwindcss.com`) with the shared `tailwind.config` defined in `/shared/tailwind-init.js`. The Tailwind color tokens reference CSS custom properties (`var(--bg)`, `var(--accent)`, …) so palette swaps reactively retune every utility class. Do not introduce a Tailwind build step.
+- Google Fonts: **Space Grotesk** (sans display + body) + **Geist Mono** (eyebrow / mono accents).
 
-## Design system — modern dark, restrained
+## Design system — Aurora Live
 
-- Background `#0a0a0a`, surface `#121212`, border `#1f1f1f`, foreground `#ededed`, muted `#888888`, dim `#5a5a5a`.
-- Single accent: ember orange `#ff7a18`, used sparingly — primary CTA, hover states, "live" status dot. Most of the page is neutral.
-- Card / button / featured radius is **6px** site-wide. Interactive cards (`a.card`, `.link-btn`, `.featured`, `.btn`) lift `translateY(-1px)` on hover with an ember border accent. Non-interactive cards just shift to a slightly lighter border on hover.
-- All three pages share the same identity header: a centered `.avatar` gradient circle with "MR" initials over a small `eyebrow` mark. The container width and body layout differ by page purpose:
-  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Big left-aligned `text-4xl md:text-5xl` h1, multi-paragraph hero, ember-tinted `.featured.lg` workshop callout, then a `.row-link` directory of "Elsewhere" links. This is the front door — generous spacing, breathing room.
-  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, ember-tinted `.featured` workshop tile, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
-  - **`/workshop/`** — content-dense at `max-w-3xl`. Same centered `.avatar` identity header (the avatar is the back-link to `/`), then editorial hero, curriculum, logistics, requirements, pricing tiers, FAQ.
-- No grain, no glow, no italic flourishes, no marginalia, no `§ XX` numbering, no rule-with-label dividers, no "Vol. 01" framing. Minimal animation: a single `fade-in` on each block, no stagger cascade beyond small per-element `animation-delay`.
+The site is themed by the **Aurora Live** treatment (variation #10 in `/design-handoff/`): a fixed-position canvas backdrop with a glassmorphic content layer on top and a docked control bar at the bottom. The chrome is identical on every page; pages own only their content.
+
+- **Palette (CSS custom properties on `:root`, six options at runtime):**
+  - `violet` (default) — bg `#0a0e1f`, accent `#a78bfa`, accent2 `#22d3ee`
+  - `emerald`, `magenta`, `sunset`, `ocean`, `mono`
+  - All vars: `--bg`, `--bg-rgb`, `--surface`, `--rule`, `--fg`, `--head`, `--muted`, `--dim`, `--accent`, `--accent-rgb`, `--accent2`, `--accent2-rgb`.
+  - JS swaps all of these on palette change. Every surface (h1 gradient, avatar ring, bullet dots, featured borders, buttons, dock accent) retunes in lockstep.
+- **Vocabulary.** Radii **12px** (cards, rows, bullets) / **14px** (tier, dock) / **18px** (`.featured.lg`) / **999px** (pill buttons). Surfaces are translucent (`rgb(var(--bg-rgb) / 0.62)` or `0.92`) with `backdrop-filter: blur(8–14px)` and a 1px `var(--rule)` border. **Featured / `.tier.featured`** use a 1px gradient *outer* (accent → accent2) wrapping a `> .inner` translucent block — preserve the `> .inner` wrapper when restyling. **Primary CTAs** are gradient pills (`linear-gradient(90deg, var(--accent), var(--accent2))`). **`.eyebrow`** is uppercase mono, letter-spacing 0.18em. **`.bullet`** is a translucent rounded row with an accent dot prefix.
+- **Backdrop.** `<canvas>` fills the viewport; runtime toggles between **Matrix rain** (with cursor repulsion) and **Asteroids** (self-playing vector ship — auto-aims, asteroid splits on hit). Two large radial-gradient glow blurs (`mix-blend-mode: screen`) and a center vignette darken the area where copy sits.
+- **Dock.** Fixed bottom, max-width 920px centered, translucent + accent-tinted, `backdrop-filter: blur(14px)`. Three groups: **Backdrop** (Rain / Asteroids), **Palette** (6 gradient swatches), **Intensity** (Calm / Med / Dense / Storm — drives Matrix density and asteroid count). Mobile collapses to a 3-row stack. Content `<main>` is `padding-bottom: 140px` (200px on mobile) to clear the dock.
+- **Persistence.** Choices survive navigation across all three pages via `localStorage` key `aurora-live:v1` with shape `{v:1, paletteKey, backdrop, intensityIdx}`.
+- **Reduced motion.** `prefers-reduced-motion: reduce` short-circuits canvas init. Glows + vignette + dock remain (static); `<html data-reduced-motion="true">` lets CSS suppress any dock pulse.
+- **All three pages share the centered identity header** — `.avatar` (130px conic-gradient ring + bg-color inner + mono initials) on home, `.avatar.sm` (80px) on workshop / links. The container width and body layout differ by page purpose:
+  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Centered hero with two-line h1 (line 1 plain `--fg`, line 2 surname clipped to `accent → accent2` gradient via `.aurora-text`), then a `.bullet` list, then a single gradient-bordered `.featured.lg` workshop callout, then `.row-link` directory of "Elsewhere" links.
+  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, `.featured` workshop tile, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
+  - **`/workshop/`** — content-dense at `max-w-3xl`. Same centered `.avatar.sm` identity header (the avatar is the back-link to `/`), then editorial hero, curriculum (`.step`), logistics (`.kv`), requirements (`.card` grid), pricing tiers (`.tier`, featured wrapped in `> .inner`), FAQ (`details.qa`).
 
 ## Directory layout
 
@@ -36,21 +44,24 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
 ├── CNAME                 rollins.io
 ├── index.html            home page (no page-specific CSS — all from /shared/)
 ├── workshop/
-│   └── index.html        workshop page (page-only CSS: .step, .tier, details.qa)
+│   └── index.html        workshop page (no page-specific CSS — .step, .tier, details.qa live in /shared/components.css)
 ├── links/
-│   └── index.html        share-targeted link landing (no page-specific CSS — all from /shared/)
+│   └── index.html        share-targeted link landing (no page-specific CSS)
 └── shared/
-    ├── tailwind-init.js  shared tailwind.config — do not duplicate
-    ├── tokens.css        body bg/fg, font, ::selection
-    ├── base.css          .eyebrow, .link, .row-link, .card (+ a.card lift hover), .fade-in / @keyframes fade-in, reduced-motion guard
-    └── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .featured.lg modifier), .avatar
+    ├── tailwind-init.js  shared tailwind.config — color tokens reference CSS vars so palette swaps reactively retune Tailwind utilities
+    ├── tokens.css        CSS custom properties on :root (default violet palette), body bg/fg/font, ::selection
+    ├── base.css          .eyebrow, .link, .row-link, .bullet, .card, .avatar (+ .sm modifier), .fade-in, reduced-motion guard
+    ├── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .lg), .tier (+ .featured), .step, details.qa
+    ├── aurora-live.css   backdrop scaffold — #aurora-root, canvas, .aurora-glow-*, .aurora-vignette, .aurora-dock; body.aurora-page padding
+    └── aurora-live.js    palette/intensity constants, MatrixRain + Asteroids draw loops, dock builder, localStorage persistence (aurora-live:v1), reduced-motion guard
 ```
 
 ## Editing rules
 
-- **Tokens, shared utilities, the fade-in animation, and the Tailwind config live in `/shared/`.** Pages own only their page-specific CSS, inlined in `<style>`.
-- **Never duplicate a class definition between a page and `/shared/`.** If two pages need the same class, move it to `base.css` (always-loaded) or `components.css` (opt-in).
-- Tailwind utility classes from the shared color/font config (`bg-bg`, `text-fg`, `text-muted`, `text-accent`, `border-border`, `bg-surface`, `font-mono`, etc.) are used inline in markup — that's fine.
+- **Tokens, shared utilities, the fade-in animation, the Aurora Live scaffold, and the Tailwind config live in `/shared/`.** Pages should not need any inline `<style>` block at all — page-specific styles are an exception, not the default.
+- **Never duplicate a class definition between a page and `/shared/`.** If two pages need the same class, move it to `base.css` or `components.css`.
+- Color and font tokens read from CSS custom properties (`--bg`, `--fg`, `--accent`, `--accent2`, `--muted`, etc.). Components must reference these — never hard-code hex values — so palette swaps work end-to-end. Tailwind utilities (`bg-bg`, `text-accent`, `text-accent2`, `border-rule`, `font-mono`, etc.) are wired to the same vars and follow palette changes automatically.
+- The `.featured` and `.tier.featured` classes require a `> .inner` child wrapper to render their gradient-border treatment. Always include `<div class="inner">…</div>` inside.
 - Cross-page links use absolute paths (`/`, `/workshop/`, `/links/`) so they work whether served from `rollins.io` root or a local `python3 -m http.server`.
 
 ## Adding a new microsite
@@ -60,22 +71,25 @@ The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollins
    ```html
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="/shared/tokens.css">
    <link rel="stylesheet" href="/shared/base.css">
    <link rel="stylesheet" href="/shared/components.css">
+   <link rel="stylesheet" href="/shared/aurora-live.css">
    <script src="https://cdn.tailwindcss.com"></script>
    <script src="/shared/tailwind-init.js"></script>
+   <script defer src="/shared/aurora-live.js"></script>
    ```
-3. Open with the shared centered identity header so the brand reads consistently:
+3. Add `class="aurora-page"` to `<body>` so the backdrop, glows, vignette, and dock mount correctly and the main content gets the right bottom padding to clear the dock.
+4. Open with the shared centered identity header so the brand reads consistently. Use the large `.avatar` on the home-style front door, `.avatar.sm` on dense content pages:
    ```html
-   <header class="text-center mb-9 fade-in">
-       <a href="/" aria-label="Back to rollins.io" class="avatar mx-auto mb-3">MR</a>
+   <header class="flex flex-col items-center text-center mb-9 fade-in">
+       <a href="/" aria-label="Back to rollins.io" class="avatar sm mb-4">MR</a>
        <div class="eyebrow"><slug> · rollins.io</div>
    </header>
    ```
-4. Compose body sections from the shared vocabulary — `.featured` for ember-accented hero cards, `.link-btn` for stacked link rows, `.card` + `.kv` for key-value blocks, `.btn` / `.btn-primary` / `.btn-ghost` for CTAs. Write only genuinely page-specific CSS in a `<style>` block.
-5. Add a row to the home `Elsewhere` link stack pointing at the new path.
+5. Compose body sections from the shared vocabulary — `.featured` (gradient-border + `> .inner`) for hero cards, `.bullet` for translucent bullet rows, `.link-btn` for stacked link rows, `.card` + `.kv` for key-value blocks, `.btn-primary` (gradient pill) / `.btn-ghost` for CTAs. Surname-style gradient text uses `linear-gradient(90deg, var(--accent), var(--accent2))` clipped to text (see `.aurora-text` on `/`).
+6. Add a row to the home `Elsewhere` link stack pointing at the new path.
 
 ## Preview locally
 

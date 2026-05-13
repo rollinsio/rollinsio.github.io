@@ -1,113 +1,261 @@
-/* Components for the modern dark theme. Only loaded by pages that use these patterns. */
+/* Components — Aurora Live vocabulary.
+   Gradient pill primary, gradient-border featured cards, translucent rows. */
 
+/* ---------- buttons ---------- */
 .btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.65rem 1.1rem;
-    border-radius: 6px;
+    padding: 0.65rem 1.15rem;
+    border-radius: 999px;
     border: 1px solid transparent;
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
     font-weight: 500;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+    letter-spacing: 0.02em;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
 }
 .btn-primary {
-    background: #ff7a18;
-    color: #0a0a0a;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: var(--bg);
+    box-shadow: 0 0 24px rgb(var(--accent-rgb) / 0.35);
 }
-.btn-primary:hover { background: #ff924a; transform: translateY(-1px); }
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 32px rgb(var(--accent-rgb) / 0.55);
+}
 .btn-ghost {
-    color: #ededed;
-    border-color: #2a2a2a;
+    color: var(--fg);
+    border-color: rgb(var(--accent-rgb) / 0.55);
+    background: rgb(var(--bg-rgb) / 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
-.btn-ghost:hover { border-color: #ff7a18; color: #ff7a18; transform: translateY(-1px); }
+.btn-ghost:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    color: transparent;
+    background-image: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
 
+/* ---------- key/value rows ---------- */
 .kv {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.55rem 0;
-    border-top: 1px solid #1f1f1f;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--rule);
     font-size: 0.92rem;
 }
 .kv:first-child { border-top: none; }
-.kv .k { color: #888888; }
-.kv .v { color: #ededed; }
+.kv .k { color: var(--muted); font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.kv .v { color: var(--fg); }
 
-/* Stacked button-style link — full width, label + optional sub + arrow. */
+/* ---------- stacked link button (links page) ---------- */
 .link-btn {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     width: 100%;
-    padding: 0.95rem 1.1rem;
-    background: #121212;
-    border: 1px solid #1f1f1f;
-    border-radius: 6px;
-    color: #ededed;
+    padding: 0.95rem 1.15rem;
+    background: rgb(var(--bg-rgb) / 0.62);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--fg);
     font-weight: 500;
     transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
 }
 .link-btn:hover {
-    border-color: #ff7a18;
-    background: #161616;
+    border-color: rgb(var(--accent-rgb) / 0.6);
+    background: rgb(var(--bg-rgb) / 0.78);
     transform: translateY(-1px);
 }
-.link-btn .left { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.link-btn .left { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .link-btn .label { line-height: 1.2; }
-.link-btn .sub { font-weight: 400; font-size: 0.82rem; color: #888888; }
+.link-btn .sub { font-weight: 400; font-size: 0.82rem; color: var(--muted); }
 .link-btn .arrow {
-    color: #5a5a5a;
+    color: var(--dim);
+    font-family: var(--font-mono);
     transition: color 0.15s ease, transform 0.15s ease;
     flex-shrink: 0;
 }
-.link-btn:hover .arrow { color: #ff7a18; transform: translateX(3px); }
+.link-btn:hover .arrow { color: var(--accent2); transform: translateX(3px); }
 
-/* Featured card — ember-tinted gradient with ember accent border. */
+/* ---------- featured card — gradient border + translucent inner ----------
+   Implementation: the outer .featured element draws the gradient via padded
+   background; the inner block (any direct child wrapped in .featured-inner,
+   or the element's own ::before stack) renders the body with translucent bg. */
 .featured {
     display: block;
+    position: relative;
+    padding: 1px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    transition: filter 0.15s ease, transform 0.12s ease;
+    color: var(--fg);
+}
+.featured:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.featured > .inner {
+    display: block;
     padding: 1.1rem 1.2rem;
-    background: linear-gradient(180deg, rgba(255,122,24,0.06), transparent 60%), #121212;
-    border: 1px solid rgba(255,122,24,0.45);
-    border-radius: 6px;
-    transition: border-color 0.15s ease, transform 0.12s ease;
+    background: rgb(var(--bg-rgb) / 0.92);
+    border-radius: 13px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
-.featured:hover { border-color: #ff7a18; transform: translateY(-1px); }
-.featured .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.featured .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
 .featured .top .badge {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: #ff7a18;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
-.featured .top .arrow { color: #ff7a18; }
-.featured .title { font-weight: 600; font-size: 1.05rem; line-height: 1.3; margin-bottom: 0.25rem; }
-.featured .meta { color: #888888; font-size: 0.85rem; }
+.featured .top .arrow { color: var(--accent2); font-family: var(--font-mono); }
+.featured .title { font-weight: 600; font-size: 1.1rem; line-height: 1.3; margin-bottom: 0.3rem; color: var(--head); }
+.featured .meta { color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
 
 /* .featured.lg — expansive variant for editorial / wide-canvas pages. */
-.featured.lg { padding: 1.6rem 1.7rem; }
-.featured.lg .top { margin-bottom: 0.65rem; }
-.featured.lg .title { font-size: 1.5rem; line-height: 1.25; margin-bottom: 0.45rem; }
+.featured.lg { border-radius: 18px; }
+.featured.lg > .inner { padding: 1.6rem 1.7rem; border-radius: 17px; }
+.featured.lg .top { margin-bottom: 0.75rem; }
+.featured.lg .title { font-size: 1.55rem; line-height: 1.25; margin-bottom: 0.5rem; }
 .featured.lg .meta { font-size: 0.95rem; line-height: 1.6; }
 
-/* Identity avatar — gradient circle with initials. */
-.avatar {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff7a18 0%, #1f1f1f 70%);
+/* ---------- pricing tier — mirrors .featured visually ---------- */
+.tier {
     display: flex;
+    flex-direction: column;
+    background: rgb(var(--bg-rgb) / 0.62);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1.6rem;
+    transition: border-color 0.15s ease, transform 0.12s ease;
+}
+.tier:hover { border-color: rgb(var(--accent-rgb) / 0.35); }
+
+/* Featured tier uses the same gradient-border trick as .featured. */
+.tier.featured {
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: 0;
+    border-radius: 14px;
+}
+.tier.featured > .inner {
+    display: flex;
+    flex-direction: column;
+    padding: 1.6rem;
+    background: rgb(var(--bg-rgb) / 0.92);
+    border-radius: 13px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    flex: 1;
+}
+
+.tier .tier-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.tier.featured .tier-eyebrow .label {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.tier .price { font-size: 2.5rem; font-weight: 600; color: var(--head); letter-spacing: -0.02em; margin-bottom: 0.95rem; }
+.tier .price .currency { color: var(--muted); font-size: 1.1rem; font-weight: 400; vertical-align: 0.6em; margin-right: 0.15em; }
+.tier .blurb { color: var(--muted); font-size: 0.92rem; line-height: 1.5; margin-bottom: 1.2rem; min-height: 4.2rem; }
+.tier ul { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
+.tier ul li {
+    color: var(--fg);
+    font-size: 0.92rem;
+    padding: 0.45rem 0 0.45rem 1.1rem;
+    border-top: 1px solid var(--rule);
+    position: relative;
+}
+.tier ul li:first-child { border-top: none; }
+.tier ul li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-family: var(--font-mono);
+}
+.tier .btn { width: 100%; justify-content: center; }
+
+/* ---------- curriculum / process step ---------- */
+.step {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--rule);
+}
+.step:last-child { border-bottom: 1px solid var(--rule); }
+.step .idx {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    padding-top: 0.15rem;
+}
+.step .title { font-weight: 500; color: var(--fg); margin-bottom: 0.2rem; }
+.step .body { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+
+/* ---------- FAQ accordion ---------- */
+details.qa {
+    border-top: 1px solid var(--rule);
+    padding: 1rem 0;
+}
+details.qa:last-of-type { border-bottom: 1px solid var(--rule); }
+details.qa > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    color: #0a0a0a;
-    font-weight: 600;
-    font-size: 1.5rem;
-    letter-spacing: -0.02em;
+    gap: 1rem;
+    color: var(--fg);
+    font-weight: 500;
+}
+details.qa > summary::-webkit-details-marker { display: none; }
+details.qa > summary::after {
+    content: "+";
+    font-family: var(--font-mono);
+    color: var(--dim);
+    transition: color 0.15s ease;
+}
+details.qa[open] > summary::after { content: "−"; color: var(--accent2); }
+details.qa > summary:hover::after { color: var(--accent2); }
+details.qa .ans {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-width: 60ch;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .btn, .btn-primary, .btn-ghost, .link-btn, .link-btn .arrow, .featured {
+    .btn, .btn-primary, .btn-ghost, .link-btn, .link-btn .arrow, .featured, .tier {
         transition: none !important;
         transform: none !important;
     }

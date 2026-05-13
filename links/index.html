@@ -11,14 +11,16 @@
     <meta name="twitter:card" content="summary">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/shared/tokens.css">
     <link rel="stylesheet" href="/shared/base.css">
     <link rel="stylesheet" href="/shared/components.css">
+    <link rel="stylesheet" href="/shared/aurora-live.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/shared/tailwind-init.js"></script>
+    <script defer src="/shared/aurora-live.js"></script>
 </head>
-<body class="bg-bg text-fg antialiased">
+<body class="aurora-page antialiased">
 
     <main class="max-w-sm mx-auto px-5 py-12 md:py-16">
 
@@ -34,9 +36,9 @@
         </nav>
 
         <!-- Identity -->
-        <header class="text-center mb-9 fade-in">
-            <div class="avatar mx-auto mb-4" aria-hidden="true">MR</div>
-            <h1 class="text-xl font-semibold tracking-tight mb-1.5">Michael Rollins</h1>
+        <header class="flex flex-col items-center text-center mb-9 fade-in">
+            <div class="avatar sm mb-4" aria-hidden="true">MR</div>
+            <h1 class="text-xl font-medium tracking-tight mb-1.5">Michael Rollins</h1>
             <p class="text-muted text-sm leading-relaxed">
                 Builder · engineer · live-build host
             </p>
@@ -45,12 +47,14 @@
         <!-- Featured: Workshop -->
         <section class="mb-3 fade-in" style="animation-delay:0.05s">
             <a href="/workshop/" class="featured">
-                <div class="top">
-                    <span class="badge">● UPCOMING WORKSHOP</span>
-                    <span class="arrow">→</span>
+                <div class="inner">
+                    <div class="top">
+                        <span class="badge">◆ Upcoming workshop</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="title">Agents building Agents</div>
+                    <div class="meta">Thursday, May 21 · 12:00 ET · 2-hour live build</div>
                 </div>
-                <div class="title">Agents building Agents</div>
-                <div class="meta">Thursday, May 14 · 12:00 ET · 2-hour live build</div>
             </a>
         </section>
 
@@ -74,6 +78,10 @@
             </a>
             <a href="https://www.linkedin.com/in/rollinsmichael/" class="link-btn fade-in" style="animation-delay:0.22s">
                 <span class="left"><span class="label">LinkedIn</span><span class="sub">Professional work</span></span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="mailto:contact-me@rollins.io" class="link-btn fade-in" style="animation-delay:0.25s">
+                <span class="left"><span class="label">Email</span><span class="sub">contact-me@rollins.io</span></span>
                 <span class="arrow">→</span>
             </a>
         </section>

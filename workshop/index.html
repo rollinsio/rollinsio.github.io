@@ -6,9 +6,6 @@
     <title>Agents Building Agents — Live Workshop</title>
     <meta name="description" content="Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&A.">
     <!--
-      CONFIG — placeholders to fill before publishing:
-        WORKSHOP_EMAIL  e.g. workshop@rollins.io (Google Workspace alias)
-
       Seat caps (live, enforced by Stripe restrictions.completed_sessions.limit):
         Supported (plink_1TUuMdGpOisb6fvvgQcc1fHP) — 5
         Standard  (plink_1TUuMuGpOisb6fvvEr33r45w) — 9
@@ -23,81 +20,50 @@
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/shared/tokens.css">
     <link rel="stylesheet" href="/shared/base.css">
     <link rel="stylesheet" href="/shared/components.css">
+    <link rel="stylesheet" href="/shared/aurora-live.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/shared/tailwind-init.js"></script>
+    <script defer src="/shared/aurora-live.js"></script>
     <style>
-        /* Curriculum steps — small mono index, then content */
-        .step {
-            display: grid;
-            grid-template-columns: 2.5rem 1fr;
-            gap: 1rem;
-            padding: 1.1rem 0;
-            border-top: 1px solid #1f1f1f;
-        }
-        .step:last-child { border-bottom: 1px solid #1f1f1f; }
-        .step .idx { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.85rem; color: #888888; padding-top: 0.1rem; }
-        .step .title { font-weight: 500; color: #ededed; margin-bottom: 0.15rem; }
-        .step .body { color: #888888; font-size: 0.95rem; line-height: 1.55; }
-
-        /* Pricing tier card */
-        .tier {
-            display: flex;
-            flex-direction: column;
-            background: #121212;
-            border: 1px solid #1f1f1f;
-            border-radius: 6px;
-            padding: 1.6rem;
-        }
-        .tier.featured {
-            border-color: rgba(255,122,24,0.45);
-            background: linear-gradient(180deg, rgba(255,122,24,0.04), transparent 40%), #121212;
-        }
-        .tier .tier-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.72rem; color: #888888; margin-bottom: 0.9rem; display: flex; justify-content: space-between; gap: 0.5rem; }
-        .tier.featured .tier-eyebrow .label { color: #ff7a18; }
-        .tier .price { font-size: 2.5rem; font-weight: 600; color: #ededed; letter-spacing: -0.02em; margin-bottom: 0.9rem; }
-        .tier .price .currency { color: #888888; font-size: 1.1rem; font-weight: 400; vertical-align: 0.6em; margin-right: 0.15em; }
-        .tier .blurb { color: #888888; font-size: 0.92rem; line-height: 1.5; margin-bottom: 1.2rem; min-height: 4.2rem; }
-        .tier ul { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
-        .tier ul li { color: #ededed; font-size: 0.92rem; padding: 0.35rem 0; border-top: 1px solid #1f1f1f; }
-        .tier ul li:first-child { border-top: none; }
-        .tier .btn { width: 100%; justify-content: center; }
-
-        /* FAQ accordion — minimal */
-        details.qa { border-top: 1px solid #1f1f1f; padding: 1rem 0; }
-        details.qa:last-of-type { border-bottom: 1px solid #1f1f1f; }
-        details.qa > summary {
-            list-style: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            color: #ededed;
+        /* Interest form — workshop page only */
+        .interest-form .field { display: flex; flex-direction: column; gap: 0.4rem; }
+        .interest-form .lbl {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
             font-weight: 500;
         }
-        details.qa > summary::-webkit-details-marker { display: none; }
-        details.qa > summary::after {
-            content: "+";
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            color: #5a5a5a;
-            transition: color 0.15s ease;
-        }
-        details.qa[open] > summary::after { content: "−"; color: #ff7a18; }
-        details.qa > summary:hover::after { color: #ff7a18; }
-        details.qa .ans {
-            margin-top: 0.7rem;
-            color: #888888;
+        .interest-form input,
+        .interest-form textarea {
+            font-family: inherit;
             font-size: 0.95rem;
-            line-height: 1.6;
-            max-width: 60ch;
+            color: var(--fg);
+            background: rgb(var(--bg-rgb) / 0.45);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            width: 100%;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
+        .interest-form textarea { resize: vertical; min-height: 5rem; line-height: 1.4; }
+        .interest-form input:focus,
+        .interest-form textarea:focus {
+            outline: none;
+            border-color: rgb(var(--accent-rgb) / 0.7);
+            background: rgb(var(--bg-rgb) / 0.6);
+        }
+        .interest-form input::placeholder,
+        .interest-form textarea::placeholder { color: var(--dim); }
+        .interest-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
     </style>
 </head>
-<body class="bg-bg text-fg antialiased">
+<body class="aurora-page antialiased">
 
     <main class="max-w-3xl mx-auto px-6 py-16 md:py-20">
 
@@ -114,19 +80,19 @@
 
         <!-- Identity -->
         <header class="text-center mb-14 fade-in">
-            <a href="/" aria-label="Back to rollins.io" class="avatar mx-auto mb-3">MR</a>
+            <a href="/" aria-label="Back to rollins.io" class="avatar sm mx-auto mb-4">MR</a>
             <div class="eyebrow">workshop · rollins.io</div>
         </header>
 
         <!-- Hero -->
         <header class="mb-20">
-            <div class="eyebrow mb-4 fade-in">
-                <span class="text-accent">●</span>&nbsp;&nbsp;Live Working Session · Thursday, May 14 · 12:00 ET
+            <div class="eyebrow mb-4 fade-in" style="text-transform:none">
+                <span class="text-accent">●</span>&nbsp;&nbsp;Live Working Session · Thursday, May 21 · 12:00 ET
             </div>
-            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
+            <h1 class="text-4xl md:text-5xl font-medium tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
                 Agents building Agents
             </h1>
-            <p class="text-fg/90 text-lg leading-relaxed mb-3 max-w-prose fade-in" style="animation-delay:0.1s">
+            <p class="text-fg text-lg leading-relaxed mb-3 max-w-prose fade-in" style="animation-delay:0.1s">
                 Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.
             </p>
             <p class="text-muted leading-relaxed mb-8 max-w-prose fade-in" style="animation-delay:0.12s">
@@ -141,7 +107,7 @@
         <!-- Curriculum -->
         <section id="details" class="mb-20">
             <div class="eyebrow mb-3">Curriculum</div>
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Two hours, one harness, real code on screen.</h2>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Two hours, one harness, real code on screen.</h2>
             <p class="text-muted leading-relaxed mb-8 max-w-prose">
                 This isn't a slide deck. We spend the first hour building together, then a full hour of deep Q&amp;A. The starter codebase is shared at the start of the session — your environment just needs to be ready (see <a href="#requirements" class="link">Requirements</a>).
             </p>
@@ -156,7 +122,7 @@
         <section class="mb-20">
             <div class="eyebrow mb-3">Logistics</div>
             <div class="card p-6">
-                <div class="kv"><span class="k">Date</span><span class="v">Thursday, May 14</span></div>
+                <div class="kv"><span class="k">Date</span><span class="v">Thursday, May 21</span></div>
                 <div class="kv"><span class="k">Start</span><span class="v">12:00 ET</span></div>
                 <div class="kv"><span class="k">Elsewhere</span><span class="v">09:00 PT · 21:30 IST · 17:00 WAT</span></div>
                 <div class="kv"><span class="k">Format</span><span class="v">60m build + 60m Q&amp;A</span></div>
@@ -168,7 +134,7 @@
         <!-- Requirements -->
         <section id="requirements" class="mb-20">
             <div class="eyebrow mb-3">Prerequisites</div>
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Show up ready.</h2>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Show up ready.</h2>
             <p class="text-muted leading-relaxed mb-8 max-w-prose">
                 We're building for the full first hour, so your environment has to be ready when we kick off. We won't have time to help you set up live.
             </p>
@@ -177,21 +143,21 @@
                 <div class="card p-5">
                     <div class="eyebrow mb-3">A · What you should know</div>
                     <ul class="space-y-2.5 text-sm leading-relaxed">
-                        <li class="text-fg/90"><span class="text-fg font-medium">Python</span> and/or <span class="text-fg font-medium">JavaScript / TypeScript</span> — comfortable reading and writing code, and with how API calls work.</li>
-                        <li class="text-fg/90">Access to an LLM. Strongly preferred: <span class="text-fg font-medium">Claude Code</span>, <span class="text-fg font-medium">Codex</span>, or <span class="text-fg font-medium">Cursor</span>.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">Python</span> and/or <span class="text-fg font-medium">JavaScript / TypeScript</span> — comfortable reading and writing code, and with how API calls work.</li>
+                        <li class="text-fg">Access to an LLM. Strongly preferred: <span class="text-fg font-medium">Claude Code</span>, <span class="text-fg font-medium">Codex</span>, or <span class="text-fg font-medium">Cursor</span>.</li>
                     </ul>
                 </div>
 
                 <div class="card p-5">
                     <div class="eyebrow mb-3">B · Install in advance</div>
                     <ul class="space-y-2.5 text-sm leading-relaxed">
-                        <li class="text-fg/90"><span class="text-fg font-medium">Docker</span>, installed and running.</li>
-                        <li class="text-fg/90">A working <span class="text-fg font-medium">Python</span> toolchain — <code class="font-mono text-xs text-accent">python</code> + <code class="font-mono text-xs text-accent">pip</code> or <code class="font-mono text-xs text-accent">uv</code>.</li>
-                        <li class="text-fg/90">A working <span class="text-fg font-medium">Node.js</span> toolchain — <code class="font-mono text-xs text-accent">node</code> + <code class="font-mono text-xs text-accent">npm</code> / <code class="font-mono text-xs text-accent">pnpm</code> / <code class="font-mono text-xs text-accent">bun</code>.</li>
-                        <li class="text-fg/90"><span class="text-fg font-medium">Git</span>, for cloning the starter codebase.</li>
-                        <li class="text-fg/90">An <span class="text-fg font-medium">API key with credits</span> on whichever LLM provider you'll use.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">Docker</span>, installed and running.</li>
+                        <li class="text-fg">A working <span class="text-fg font-medium">Python</span> toolchain — <code class="font-mono text-xs text-accent2">python</code> + <code class="font-mono text-xs text-accent2">pip</code> or <code class="font-mono text-xs text-accent2">uv</code>.</li>
+                        <li class="text-fg">A working <span class="text-fg font-medium">Node.js</span> toolchain — <code class="font-mono text-xs text-accent2">node</code> + <code class="font-mono text-xs text-accent2">npm</code> / <code class="font-mono text-xs text-accent2">pnpm</code> / <code class="font-mono text-xs text-accent2">bun</code>.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">Git</span>, for cloning the starter codebase.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">API key with credits</span> on whichever LLM provider you'll use.</li>
                     </ul>
-                    <p class="text-muted text-xs mt-4 pt-3 border-t border-border leading-relaxed">
+                    <p class="text-muted text-xs mt-4 pt-3 border-t border-rule leading-relaxed">
                         <span class="text-accent">Heads up</span> — the sandbox and RAG db each pull a Docker image. A few GB of free disk and some RAM headroom makes things smoother.
                     </p>
                 </div>
@@ -201,7 +167,7 @@
         <!-- Pricing -->
         <section id="pricing" class="mb-20">
             <div class="eyebrow mb-3">Tickets</div>
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-4">Pricing that makes sense globally.</h2>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Pricing that makes sense globally.</h2>
             <p class="text-muted leading-relaxed mb-8 max-w-prose">
                 I want to make this accessible globally while keeping the session high-signal. Choose the tier that fits your situation.
             </p>
@@ -220,15 +186,17 @@
                 </div>
 
                 <div class="tier featured">
-                    <div class="tier-eyebrow"><span class="label">Standard · Recommended</span><span>Engineer · Founder</span></div>
-                    <div class="price"><span class="currency">$</span>99</div>
-                    <p class="blurb">For most professional engineers, builders, and technical founders.</p>
-                    <ul>
-                        <li>Live access + Q&amp;A</li>
-                        <li>Starter framework code</li>
-                        <li>Unlisted replay + notes</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001" class="btn btn-primary">Get standard ticket</a>
+                    <div class="inner">
+                        <div class="tier-eyebrow"><span class="label">Standard · Recommended</span><span>Engineer · Founder</span></div>
+                        <div class="price"><span class="currency">$</span>99</div>
+                        <p class="blurb">For most professional engineers, builders, and technical founders.</p>
+                        <ul>
+                            <li>Live access + Q&amp;A</li>
+                            <li>Starter framework code</li>
+                            <li>Unlisted replay + notes</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001" class="btn btn-primary">Get standard ticket</a>
+                    </div>
                 </div>
 
                 <div class="tier">
@@ -245,19 +213,46 @@
             </div>
 
             <!-- Express interest -->
-            <div class="card p-6 mt-6 grid md:grid-cols-12 gap-4 items-center">
-                <div class="md:col-span-7">
+            <div class="card p-6 mt-6">
+                <div class="mb-5">
                     <div class="eyebrow mb-2">Not ready to commit?</div>
-                    <h3 class="text-lg font-semibold mb-1.5">Get the early-bird heads-up.</h3>
+                    <h3 class="text-lg font-medium mb-1.5">Get the early-bird heads-up.</h3>
                     <p class="text-muted text-sm leading-relaxed">Drop me a line and I'll add you to the list. You'll get the date confirmation, the starter framework preview, and a heads-up before tickets go live.</p>
                 </div>
-                <div class="md:col-span-5 flex flex-col gap-3 md:items-end">
-                    <a href="mailto:WORKSHOP_EMAIL?subject=Workshop%20interest%20%E2%80%94%20Agents%20Building%20Agents&body=Hi%2C%0A%0AI%27d%20like%20to%20be%20notified%20about%20the%20Agents%20Building%20Agents%20workshop.%0A%0AName%3A%0ATimezone%3A%0ANotes%2Fquestions%3A%0A%0AThanks%21" class="btn btn-ghost">Express interest</a>
-                    <div class="flex items-center gap-2 text-sm">
-                        <span class="text-muted">or email</span>
-                        <a href="mailto:WORKSHOP_EMAIL" id="workshop-email" class="link font-mono text-xs">WORKSHOP_EMAIL</a>
-                        <button type="button" onclick="copyWorkshopEmail(this)" class="font-mono text-xs px-2 py-1 border border-border rounded text-muted hover:text-accent hover:border-dim transition">Copy</button>
+
+                <form id="interest-form" action="https://formspree.io/f/mqenopqj" method="POST" class="interest-form grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="field">
+                        <span class="lbl">Name</span>
+                        <input type="text" name="name" required autocomplete="name">
+                    </label>
+                    <label class="field">
+                        <span class="lbl">Email</span>
+                        <input type="email" name="email" required autocomplete="email">
+                    </label>
+                    <label class="field sm:col-span-2">
+                        <span class="lbl">Timezone <span class="text-dim normal-case tracking-normal">(optional)</span></span>
+                        <input type="text" name="timezone" placeholder="e.g. ET, PT, IST">
+                    </label>
+                    <label class="field sm:col-span-2">
+                        <span class="lbl">Notes or questions <span class="text-dim normal-case tracking-normal">(optional)</span></span>
+                        <textarea name="notes" rows="3"></textarea>
+                    </label>
+                    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+                    <input type="hidden" name="_subject" value="Workshop interest — Agents Building Agents">
+                    <div class="sm:col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 mt-1">
+                        <button type="submit" class="btn btn-primary">Send <span aria-hidden="true">→</span></button>
+                        <span class="text-muted text-xs">or email <a href="mailto:workshop@rollins.io" class="link font-mono">workshop@rollins.io</a></span>
                     </div>
+                </form>
+
+                <div id="interest-success" class="hidden">
+                    <div class="eyebrow mb-2" style="color: var(--accent2)">Got it</div>
+                    <h3 class="text-lg font-medium mb-1.5">You're on the list.</h3>
+                    <p class="text-muted text-sm leading-relaxed">Thanks — I'll be in touch with the date confirmation and the starter framework preview before tickets go live.</p>
+                </div>
+
+                <div id="interest-error" class="hidden mt-4">
+                    <p class="text-sm leading-relaxed">Something went wrong sending that. Email me directly at <a href="mailto:workshop@rollins.io" class="link font-mono">workshop@rollins.io</a> and I'll add you manually.</p>
                 </div>
             </div>
         </section>
@@ -265,7 +260,7 @@
         <!-- FAQ -->
         <section class="mb-20">
             <div class="eyebrow mb-3">FAQ</div>
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-6">Questions, asked &amp; answered.</h2>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-6">Questions, asked &amp; answered.</h2>
 
             <details class="qa">
                 <summary>Do I need to be a Python expert?</summary>
@@ -294,15 +289,37 @@
     </main>
 
     <script>
-        function copyWorkshopEmail(btn) {
-            const email = document.getElementById('workshop-email').textContent.trim();
-            navigator.clipboard.writeText(email).then(() => {
-                const original = btn.textContent;
-                btn.textContent = 'Copied';
+        (function () {
+            const form = document.getElementById('interest-form');
+            const success = document.getElementById('interest-success');
+            const error = document.getElementById('interest-error');
+            if (!form) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                const originalLabel = btn.innerHTML;
                 btn.disabled = true;
-                setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1500);
+                btn.innerHTML = 'Sending…';
+                error.classList.add('hidden');
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!res.ok) throw new Error('non-2xx');
+                    form.classList.add('hidden');
+                    success.classList.remove('hidden');
+                    success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch {
+                    error.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = originalLabel;
+                }
             });
-        }
+        })();
     </script>
 
 </body>

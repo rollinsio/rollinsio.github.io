@@ -2,17 +2,20 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                bg:      '#0a0a0a',
-                surface: '#121212',
-                border:  '#1f1f1f',
-                fg:      '#ededed',
-                muted:   '#888888',
-                dim:     '#5a5a5a',
-                accent:  '#ff7a18',
+                bg:      'var(--bg)',
+                surface: 'var(--surface)',
+                border:  'var(--rule)',
+                rule:    'var(--rule)',
+                fg:      'var(--fg)',
+                head:    'var(--head)',
+                muted:   'var(--muted)',
+                dim:     'var(--dim)',
+                accent:  'var(--accent)',
+                accent2: 'var(--accent2)',
             },
             fontFamily: {
-                sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
-                mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+                sans: ['"Space Grotesk"', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+                mono: ['"Geist Mono"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
             },
             maxWidth: {
                 prose: '38rem',

@@ -11,14 +11,26 @@
     <meta name="twitter:card" content="summary">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/shared/tokens.css">
     <link rel="stylesheet" href="/shared/base.css">
     <link rel="stylesheet" href="/shared/components.css">
+    <link rel="stylesheet" href="/shared/aurora-live.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/shared/tailwind-init.js"></script>
+    <script defer src="/shared/aurora-live.js"></script>
+    <style>
+        .aurora-text {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-weight: 500;
+        }
+    </style>
 </head>
-<body class="bg-bg text-fg antialiased">
+<body class="aurora-page antialiased">
 
     <main class="max-w-prose mx-auto px-6 py-16 md:py-24">
 
@@ -34,24 +46,27 @@
         </nav>
 
         <!-- Identity -->
-        <header class="text-center mb-16 fade-in">
-            <div class="avatar mx-auto mb-4" aria-hidden="true">MR</div>
+        <header class="flex flex-col items-center text-center mb-12 fade-in">
+            <div class="avatar mb-5" aria-hidden="true">MR</div>
             <div class="eyebrow">rollins.io</div>
         </header>
 
         <!-- Hero -->
-        <section class="mb-16">
-            <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-5 fade-in">Michael Rollins</h1>
-            <p class="text-fg/90 text-lg leading-relaxed mb-5 fade-in" style="animation-delay:0.05s">
+        <section class="mb-14 text-center">
+            <h1 class="text-5xl md:text-6xl font-medium tracking-tight leading-[0.95] mb-7 fade-in" style="animation-delay:0.05s">
+                Michael<br>
+                <span class="aurora-text">Rollins</span>
+            </h1>
+            <p class="text-fg text-lg leading-relaxed mb-7 fade-in" style="animation-delay:0.08s">
                 Pragmatic engineer and CTO shaping best practices for agentic engineering.
             </p>
-            <ul class="text-fg/90 leading-relaxed mb-5 space-y-1.5 fade-in" style="animation-delay:0.08s">
-                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Scaled Flurry by Yahoo to 5 billion daily sessions</span></li>
-                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Now: agentic systems at Rellify and FD</span></li>
-                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>Early AI at Outlier</span></li>
-                <li class="flex gap-3"><span class="text-dim font-mono text-sm pt-0.5">—</span><span>iOS, Android, backend, frontend, infrastructure</span></li>
+            <ul class="flex flex-col gap-2.5 mb-7 text-left fade-in" style="animation-delay:0.1s">
+                <li class="bullet">Scaled Flurry by Yahoo to 5 billion daily sessions</li>
+                <li class="bullet">Now: agentic systems at Rellify and FD</li>
+                <li class="bullet">Early AI at Outlier</li>
+                <li class="bullet">iOS, Android, backend, frontend, infrastructure</li>
             </ul>
-            <p class="text-muted text-base leading-relaxed fade-in" style="animation-delay:0.1s">
+            <p class="text-muted text-base leading-relaxed fade-in" style="animation-delay:0.12s">
                 Builder, engineer, and host of the Δ-V live-build workshop.
             </p>
         </section>
@@ -59,12 +74,14 @@
         <!-- Featured: Workshop -->
         <section class="mb-16 fade-in" style="animation-delay:0.15s">
             <a href="/workshop/" class="featured lg">
-                <div class="top">
-                    <span class="badge">● UPCOMING WORKSHOP · Thursday, May 14</span>
-                    <span class="arrow">→</span>
+                <div class="inner">
+                    <div class="top">
+                        <span class="badge">◆ Upcoming workshop · Thursday, May 21</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="title">Agents building Agents</div>
+                    <div class="meta">Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.</div>
                 </div>
-                <div class="title">Agents building Agents</div>
-                <div class="meta">Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.</div>
             </a>
         </section>
 
@@ -95,6 +112,11 @@
             <a href="https://www.linkedin.com/in/rollinsmichael/" class="row-link">
                 <span class="label">LinkedIn</span>
                 <span class="desc">Professional work</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="mailto:contact-me@rollins.io" class="row-link">
+                <span class="label">Email</span>
+                <span class="desc">contact-me@rollins.io</span>
                 <span class="arrow">→</span>
             </a>
         </section>
