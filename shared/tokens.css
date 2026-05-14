@@ -1,20 +1,20 @@
-/* Aurora Live tokens. Defaults to the violet palette; JS swaps these
-   on palette change (see /shared/aurora-live.js). All component CSS
-   reads from these vars, so any palette change retunes the entire UI. */
+/* Site tokens. Single white-on-near-black palette. Component CSS reads
+   from these vars; the asteroid backdrop in aurora-live.js reads them
+   at startup. */
 
 :root {
-    --bg:       #0a0e1f;
-    --bg-rgb:   10 14 31;
-    --surface:  #121633;
-    --rule:     #1f254a;
+    --bg:       #08080a;
+    --bg-rgb:   8 8 10;
+    --surface:  #121214;
+    --rule:     #1c1d24;
     --fg:       #f1f0ff;
-    --head:     #e8defd;
-    --muted:    #8b8db0;
+    --head:     #ffffff;
+    --muted:    #9098ad;
     --dim:      #5a5e80;
-    --accent:   #a78bfa;
-    --accent-rgb: 167 139 250;
-    --accent2:  #22d3ee;
-    --accent2-rgb: 34 211 238;
+    --accent:   #ffffff;
+    --accent-rgb: 255 255 255;
+    --accent2:  #e2e8f0;
+    --accent2-rgb: 226 232 240;
 
     --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;

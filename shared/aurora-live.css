@@ -1,5 +1,6 @@
-/* Aurora Live scaffolding — fixed-position backdrop layer + bottom dock.
-   Mounted by /shared/aurora-live.js into every aurora-page document. */
+/* Asteroid backdrop scaffolding — fixed-position canvas + atmospheric
+   glows + center vignette. Mounted by /shared/aurora-live.js into every
+   page that has <body class="aurora-page">. */
 
 #aurora-root {
     position: fixed;
@@ -51,101 +52,6 @@
     pointer-events: none;
 }
 
-/* ---------- the bottom dock ---------- */
-.aurora-dock {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    max-width: 920px;
-    margin-inline: auto;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 14px;
-    padding: 12px 14px;
-    background: rgb(var(--bg-rgb) / 0.78);
-    border: 1px solid rgb(var(--accent-rgb) / 0.45);
-    border-radius: 14px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    pointer-events: auto;
-    z-index: 50;
-    box-shadow:
-        0 -4px 30px rgb(var(--bg-rgb) / 0.7),
-        0 0 24px rgb(var(--accent-rgb) / 0.18);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.aurora-dock[hidden] { display: none; }
-
-.aurora-dock .group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
-}
-.aurora-dock .group-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-.aurora-dock .group--palette { align-items: center; }
-.aurora-dock .group--intensity { align-items: flex-end; }
-
-.aurora-dock .row {
-    display: flex;
-    gap: 4px;
-}
-.aurora-dock .row--palette { gap: 8px; }
-
-.aurora-dock button {
-    appearance: none;
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 6px;
-    color: var(--muted);
-    background: transparent;
-    border: 1px solid rgb(var(--accent-rgb) / 0.35);
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-.aurora-dock button:hover { color: var(--fg); border-color: var(--accent); }
-.aurora-dock button[aria-pressed="true"] {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-}
-
-.aurora-dock .swatch {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    padding: 0;
-    border: 1px solid rgb(255 255 255 / 0.1);
-    box-shadow: none;
-    background: linear-gradient(135deg, var(--swatch-a, var(--accent)), var(--swatch-b, var(--accent2)));
-}
-.aurora-dock .swatch[aria-pressed="true"] {
-    border: 2px solid var(--fg);
-    box-shadow: 0 0 12px var(--swatch-a, var(--accent));
-}
-
-@media (max-width: 640px) {
-    .aurora-dock {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 10px 12px;
-    }
-    .aurora-dock .group--palette,
-    .aurora-dock .group--intensity { align-items: stretch; }
-    .aurora-dock .row--palette { justify-content: center; }
-}
-
 /* ---------- page chrome integration ---------- */
 body.aurora-page {
     min-height: 100vh;
@@ -153,10 +59,7 @@ body.aurora-page {
 body.aurora-page main {
     position: relative;
     z-index: 1;
-    padding-bottom: 140px;
-}
-@media (max-width: 640px) {
-    body.aurora-page main { padding-bottom: 200px; }
+    padding-bottom: 4rem;
 }
 body.aurora-page footer {
     position: relative;
@@ -167,13 +70,4 @@ body.aurora-page footer {
 html[data-reduced-motion="true"] .aurora-glow-a,
 html[data-reduced-motion="true"] .aurora-glow-b {
     filter: blur(70px);
-}
-@media (prefers-reduced-motion: reduce) {
-    .aurora-dock,
-    .aurora-dock button,
-    .aurora-glow-a,
-    .aurora-glow-b {
-        transition: none !important;
-        animation: none !important;
-    }
 }
