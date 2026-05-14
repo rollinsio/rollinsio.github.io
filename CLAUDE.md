@@ -4,10 +4,11 @@ Guidance for Claude Code when editing this repo.
 
 ## What this repo is
 
-The single GitHub Pages site for `rollins.io`. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are three pages:
+The single GitHub Pages site for `rollins.io`. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are four pages:
 
 - `/` — `index.html` (Michael Rollins · home)
 - `/workshop/` — `workshop/index.html` (Agents Building Agents live-build session)
+- `/consulting/` — `consulting/index.html` (engineering-leadership working sessions / consulting offering)
 - `/links/` — `links/index.html` (linktree-style stacked-button page for sharing in social bios)
 
 The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollinsio/delta-v-workshop`) that is now just a redirect stub. Do not edit content there.
@@ -100,7 +101,7 @@ cd /Users/rollins/delta-v/web-github-pages/rollins-home
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/`, `http://localhost:8000/workshop/`, and `http://localhost:8000/links/`.
+Then open `http://localhost:8000/`, `http://localhost:8000/workshop/`, `http://localhost:8000/consulting/`, and `http://localhost:8000/links/`.
 
 ## Workshop page — content sync points
 
@@ -127,3 +128,18 @@ In `index.html` (home) and `links/index.html`:
 - `ROLLINS_BIO` (home only)
 - `WORKSHOP_DATE` (both — keep in sync with workshop page)
 - `GITHUB_URL`, `WRITING_URL`, `YOUTUBE_URL`, `X_URL`, `LINKEDIN_URL`, `CAL_URL`, `EMAIL` (both)
+
+## Consulting page — content sync points
+
+When editing `consulting/index.html`:
+
+- Sections: Hero, The shift (`#why`), Approach (`#approach`) with Day 1 steps 01–05 + optional Day 2 steps 06–07, Outcomes (`#outcomes`), Format (`#format`), Engagement (`#engage`) with two `.engagement` cards (One-day featured / Two-day), inquiry block (`#contact`), FAQ. The One-day uses `.engagement.featured` for accent border + tinted gradient and primary CTA — preserve that emphasis if restyling.
+- Engagement length must stay aligned across: hero subhead ("One or two days"), Approach intro ("first day stands on its own"), Format card (`Length: One day, or one + one`), Engagement cards (One-day / Two-day), and FAQ ("Can you run this remotely?").
+- The page is intentionally evergreen — no fixed date. All CTAs route to `mailto:CONSULTING_EMAIL`.
+
+## Placeholders to fill before launch (consulting)
+
+In `consulting/index.html`:
+- `CONSULTING_EMAIL` — every engagement-card CTA, the inquiry block `mailto:`, the plain-text fallback, and the copy button. Should be a Google Workspace alias on `rollins.io` (e.g. `consulting@rollins.io`).
+
+No Stripe Payment Links here — engagements are quoted per team. If a productized package ever ships, follow the workshop pattern: a Payment Link per package, no keys in the repo.
