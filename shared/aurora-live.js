@@ -30,7 +30,7 @@
         ctx.scale(dpr, dpr);
         const W = cssW, H = cssH;
 
-        const ship = { x: W / 2, y: H / 2, angle: 0, drift: Math.random() * 1000 };
+        const ship = { x: W / 2, y: H / 2, angle: 0, vx: 0, vy: 0, thrusting: false, drift: Math.random() * 1000 };
         const pointer = { x: -9999, y: -9999, active: false, lastSeen: 0 };
         function onMove(e) {
             const t = e.touches && e.touches[0] ? e.touches[0] : e;
@@ -76,30 +76,10 @@
             ctx.fillStyle = palette.bg;
             ctx.fillRect(0, 0, W, H);
 
-            // AI: aim ship at nearest asteroid (with wrap)
-            let near = null, nDist = Infinity;
-            if (!shipOff) {
-                for (const a of asteroids) {
-                    let dx = a.x - ship.x, dy = a.y - ship.y;
-                    if (dx > W / 2) dx -= W; else if (dx < -W / 2) dx += W;
-                    if (dy > H / 2) dy -= H; else if (dy < -H / 2) dy += H;
-                    const d = dx * dx + dy * dy;
-                    if (d < nDist) { nDist = d; near = { dx, dy, a }; }
-                }
-                if (near) {
-                    const target = Math.atan2(near.dy, near.dx);
-                    let diff = target - ship.angle;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    ship.angle += diff * 0.07 * f;
-                    if (now - lastShot > 520 && Math.abs(diff) < 0.22) {
-                        bullets.push({ x: ship.x + Math.cos(ship.angle) * 16, y: ship.y + Math.sin(ship.angle) * 16, vx: Math.cos(ship.angle) * 5.5, vy: Math.sin(ship.angle) * 5.5, life: 140 });
-                        lastShot = now;
-                    }
-                }
-            }
-
-            // ship motion
+            // Ship: rotate toward a movement target, then apply forward-only
+            // thrust scaled by alignment. Friction + max-speed cap give it
+            // inertia; the ship coasts past targets and curves back instead
+            // of teleporting.
             if (!shipOff) {
                 let targetX, targetY;
                 if (pointer.active && now - pointer.lastSeen < 2500) {
@@ -112,26 +92,77 @@
                     targetY = H / 2 + Math.sin(ship.drift * 1.3) * H * 0.34;
                 }
 
-                // No asteroid to aim at? Aim the ship in its movement direction.
-                if (!near) {
-                    const ddx = targetX - ship.x;
-                    const ddy = targetY - ship.y;
-                    if (ddx * ddx + ddy * ddy > 4) {
-                        const aim = Math.atan2(ddy, ddx);
-                        let diff = aim - ship.angle;
-                        while (diff > Math.PI) diff -= Math.PI * 2;
-                        while (diff < -Math.PI) diff += Math.PI * 2;
-                        ship.angle += diff * 0.05 * f;
-                    }
+                const ddx = targetX - ship.x;
+                const ddy = targetY - ship.y;
+                const distSq = ddx * ddx + ddy * ddy;
+                const aim = Math.atan2(ddy, ddx);
+                let diff = aim - ship.angle;
+                while (diff > Math.PI) diff -= Math.PI * 2;
+                while (diff < -Math.PI) diff += Math.PI * 2;
+                ship.angle += diff * 0.06 * f;
+
+                // Forward thrust only when (a) we're past the arrival radius
+                // and (b) we're roughly pointed at the target. Misaligned ⇒
+                // coast and turn first. Pointer mode ramps accel + max speed
+                // with distance — gentle when the cursor is close, charging
+                // across the screen when it's far away.
+                const arrival = 60;
+                const align = Math.max(0, Math.cos(diff));
+                let maxSpeed, accel;
+                if (pointer.active) {
+                    const dist = Math.sqrt(distSq);
+                    const farRange = Math.min(W, H) * 0.6;
+                    const t = Math.max(0, Math.min(1, (dist - arrival) / farRange));
+                    accel = 0.025 + t * 0.055;
+                    maxSpeed = 0.9 + t * 1.1;
+                } else {
+                    accel = 0.045;
+                    maxSpeed = 1.7;
+                }
+                const thrust = distSq > arrival * arrival ? accel * align : 0;
+                ship.thrusting = thrust > 0.005;
+                ship.vx += Math.cos(ship.angle) * thrust * f;
+                ship.vy += Math.sin(ship.angle) * thrust * f;
+
+                const fric = Math.pow(0.985, f);
+                ship.vx *= fric;
+                ship.vy *= fric;
+
+                const sp = Math.hypot(ship.vx, ship.vy);
+                if (sp > maxSpeed) {
+                    ship.vx = ship.vx / sp * maxSpeed;
+                    ship.vy = ship.vy / sp * maxSpeed;
                 }
 
-                // Pointer-tracked motion is lazier than idle drift — the ship
-                // glides toward the cursor rather than chasing it.
-                const lerpAmt = Math.min(1, (pointer.active ? 0.015 : 0.05) * f);
-                ship.x += (targetX - ship.x) * lerpAmt;
-                ship.y += (targetY - ship.y) * lerpAmt;
-                ship.x = Math.max(0, Math.min(W, ship.x));
-                ship.y = Math.max(0, Math.min(H, ship.y));
+                ship.x += ship.vx * f;
+                ship.y += ship.vy * f;
+                if (ship.x < 0) { ship.x = 0; if (ship.vx < 0) ship.vx = 0; }
+                else if (ship.x > W) { ship.x = W; if (ship.vx > 0) ship.vx = 0; }
+                if (ship.y < 0) { ship.y = 0; if (ship.vy < 0) ship.vy = 0; }
+                else if (ship.y > H) { ship.y = H; if (ship.vy > 0) ship.vy = 0; }
+
+                // Opportunistic shooting: fire if any asteroid is in the forward arc.
+                if (now - lastShot > 520) {
+                    for (const a of asteroids) {
+                        let dax = a.x - ship.x, day = a.y - ship.y;
+                        if (dax > W / 2) dax -= W; else if (dax < -W / 2) dax += W;
+                        if (day > H / 2) day -= H; else if (day < -H / 2) day += H;
+                        let d2 = Math.atan2(day, dax) - ship.angle;
+                        while (d2 > Math.PI) d2 -= Math.PI * 2;
+                        while (d2 < -Math.PI) d2 += Math.PI * 2;
+                        if (Math.abs(d2) < 0.22) {
+                            bullets.push({
+                                x: ship.x + Math.cos(ship.angle) * 16,
+                                y: ship.y + Math.sin(ship.angle) * 16,
+                                vx: Math.cos(ship.angle) * 5.5 + ship.vx,
+                                vy: Math.sin(ship.angle) * 5.5 + ship.vy,
+                                life: 140,
+                            });
+                            lastShot = now;
+                            break;
+                        }
+                    }
+                }
             }
 
             // asteroids
@@ -212,7 +243,7 @@
                 ctx.lineTo(-9, 7);
                 ctx.closePath();
                 ctx.stroke();
-                if (((now / 80) | 0) % 2) {
+                if (ship.thrusting && ((now / 80) | 0) % 2) {
                     ctx.beginPath();
                     ctx.moveTo(-5, -3);
                     ctx.lineTo(-12, 0);

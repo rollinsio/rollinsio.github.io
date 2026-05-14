@@ -4,66 +4,77 @@ Guidance for Claude Code when editing this repo.
 
 ## What this repo is
 
-The single GitHub Pages site for `rollins.io`. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are four pages:
+The single GitHub Pages site for `rollins.io`. The repo is `rollinsio/rollinsio.github.io` — a user-pages repo, so Pages serves its default branch (`main`) root. It hosts the personal home page at `/` and microsites at `/<slug>/`. Today there are four content pages:
 
 - `/` — `index.html` (Michael Rollins · home)
 - `/workshop/` — `workshop/index.html` (Agents Building Agents live-build session)
-- `/consulting/` — `consulting/index.html` (engineering-leadership working sessions / consulting offering)
+- `/consulting/` — `consulting/index.html` (engineering-leadership working sessions)
 - `/links/` — `links/index.html` (linktree-style stacked-button page for sharing in social bios)
+
+Plus a `/design-handoff/` directory containing a React+Babel-in-browser preview of past design variations — kept as a historical reference, not edited as part of the live site.
 
 The legacy `workshop.rollins.io` subdomain is served by a sibling repo (`rollinsio/delta-v-workshop`) that is now just a redirect stub. Do not edit content there.
 
 ## Stack
 
 - Pure static HTML. No build system, no package manager, no tests.
-- Tailwind CSS via CDN (`https://cdn.tailwindcss.com`) with the shared `tailwind.config` defined in `/shared/tailwind-init.js`. The Tailwind color tokens reference CSS custom properties (`var(--bg)`, `var(--accent)`, …) so palette swaps reactively retune every utility class. Do not introduce a Tailwind build step.
+- Tailwind CSS via CDN (`https://cdn.tailwindcss.com`) with the shared `tailwind.config` defined in `/shared/tailwind-init.js`. Tailwind color tokens reference CSS custom properties (`var(--bg)`, `var(--accent)`, …) so the whole utility palette retunes from a single edit to `tokens.css`. Do not introduce a Tailwind build step.
 - Google Fonts: **Space Grotesk** (sans display + body) + **Geist Mono** (eyebrow / mono accents).
 
-## Design system — Aurora Live
+## Design system
 
-The site is themed by the **Aurora Live** treatment (variation #10 in `/design-handoff/`): a fixed-position canvas backdrop with a glassmorphic content layer on top and a docked control bar at the bottom. The chrome is identical on every page; pages own only their content.
+A single white-on-near-black palette across every page, with a fixed-position asteroid-field canvas backdrop. The historical "Aurora Live" treatment (which used to support six palettes, two backdrops, intensity choices, and a dock for switching between them) has been collapsed to one monochromatic look — but the file names (`aurora-live.css`, `aurora-live.js`) and body class (`aurora-page`) are kept for continuity.
 
-- **Palette (CSS custom properties on `:root`, six options at runtime):**
-  - `violet` (default) — bg `#0a0e1f`, accent `#a78bfa`, accent2 `#22d3ee`
-  - `emerald`, `magenta`, `sunset`, `ocean`, `mono`
-  - All vars: `--bg`, `--bg-rgb`, `--surface`, `--rule`, `--fg`, `--head`, `--muted`, `--dim`, `--accent`, `--accent-rgb`, `--accent2`, `--accent2-rgb`.
-  - JS swaps all of these on palette change. Every surface (h1 gradient, avatar ring, bullet dots, featured borders, buttons, dock accent) retunes in lockstep.
-- **Vocabulary.** Radii **12px** (cards, rows, bullets) / **14px** (tier, dock) / **18px** (`.featured.lg`) / **999px** (pill buttons). Surfaces are translucent (`rgb(var(--bg-rgb) / 0.62)` or `0.92`) with `backdrop-filter: blur(8–14px)` and a 1px `var(--rule)` border. **Featured / `.tier.featured`** use a 1px gradient *outer* (accent → accent2) wrapping a `> .inner` translucent block — preserve the `> .inner` wrapper when restyling. **Primary CTAs** are gradient pills (`linear-gradient(90deg, var(--accent), var(--accent2))`). **`.eyebrow`** is uppercase mono, letter-spacing 0.18em. **`.bullet`** is a translucent rounded row with an accent dot prefix.
-- **Backdrop.** `<canvas>` fills the viewport; runtime toggles between **Matrix rain** (with cursor repulsion) and **Asteroids** (self-playing vector ship — auto-aims, asteroid splits on hit). Two large radial-gradient glow blurs (`mix-blend-mode: screen`) and a center vignette darken the area where copy sits.
-- **Dock.** Fixed bottom, max-width 920px centered, translucent + accent-tinted, `backdrop-filter: blur(14px)`. Three groups: **Backdrop** (Rain / Asteroids), **Palette** (6 gradient swatches), **Intensity** (Calm / Med / Dense / Storm — drives Matrix density and asteroid count). Mobile collapses to a 3-row stack. Content `<main>` is `padding-bottom: 140px` (200px on mobile) to clear the dock.
-- **Persistence.** Choices survive navigation across all three pages via `localStorage` key `aurora-live:v1` with shape `{v:1, paletteKey, backdrop, intensityIdx}`.
-- **Reduced motion.** `prefers-reduced-motion: reduce` short-circuits canvas init. Glows + vignette + dock remain (static); `<html data-reduced-motion="true">` lets CSS suppress any dock pulse.
-- **All three pages share the centered identity header** — `.avatar` (130px conic-gradient ring + bg-color inner + mono initials) on home, `.avatar.sm` (80px) on workshop / links. The container width and body layout differ by page purpose:
-  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Centered hero with two-line h1 (line 1 plain `--fg`, line 2 surname clipped to `accent → accent2` gradient via `.aurora-text`), then a `.bullet` list, then a single gradient-bordered `.featured.lg` workshop callout, then `.row-link` directory of "Elsewhere" links.
-  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, `.featured` workshop tile, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
-  - **`/workshop/`** — content-dense at `max-w-3xl`. Same centered `.avatar.sm` identity header (the avatar is the back-link to `/`), then editorial hero, curriculum (`.step`), logistics (`.kv`), requirements (`.card` grid), pricing tiers (`.tier`, featured wrapped in `> .inner`), FAQ (`details.qa`).
+- **Palette (CSS custom properties on `:root`, single palette):**
+  - `--bg: #08080a`, `--bg-rgb: 8 8 10`
+  - `--surface: #121214`, `--rule: #1c1d24`
+  - `--fg: #f1f0ff`, `--head: #ffffff`, `--muted: #9098ad`, `--dim: #5a5e80`
+  - `--accent: #ffffff`, `--accent-rgb: 255 255 255`
+  - `--accent2: #e2e8f0`, `--accent2-rgb: 226 232 240`
+  - All defined in `shared/tokens.css`. JS does NOT manage the palette at runtime — it just reads `--bg`/`--accent`/`--head` once at startup to colour the canvas.
+- **Vocabulary.** Radii **12px** (cards, rows, bullets) / **14px** (tier) / **18px** (`.featured.lg`) / **999px** (pill buttons). Surfaces are translucent (`rgb(var(--bg-rgb) / 0.62)` or `0.92`) with `backdrop-filter: blur(8–14px)` and a 1px `var(--rule)` border. **`.featured` and `.tier.featured`** use a 1px gradient *outer* (accent → accent2) wrapping a `> .inner` translucent block — **the `> .inner` wrapper is REQUIRED**, otherwise the gradient outer renders directly and text disappears against near-white. **Primary CTAs** are gradient pills (`linear-gradient(90deg, var(--accent), var(--accent2))`). **`.eyebrow`** is uppercase mono, letter-spacing 0.18em. **`.bullet`** is a translucent rounded row with an accent dot prefix.
+- **Backdrop.** `<canvas>` fills the viewport, drawing a vector-style asteroid field with an auto-piloting ship. The ship has Asteroids-style physics — forward-only thrust along its facing angle, separate `vx/vy` velocity with friction (`* 0.985`/frame) and a max-speed cap, so it accelerates, coasts past targets, and curves back instead of teleporting. It rotates toward a movement target (cursor when active, lazy lissajous drift otherwise; cursor mode uses softer accel + lower max speed so it glides instead of darting), thrusts only past an arrival radius and when roughly aligned, and the thrust flame only renders when the engine is firing this frame. Shooting is opportunistic — bullets fire whenever an asteroid drifts into the forward arc. Behind the canvas: two large radial-gradient glow blurs (`mix-blend-mode: screen`) and a center vignette darken the area where copy sits.
+- **Per-page backdrop config via body data attributes:**
+  - `data-aurora-asteroids="N"` — asteroid count (default 6 if absent). `0` = empty field.
+  - `data-aurora-ship="off"` — hide the ship entirely.
+  - If both attrs leave nothing to animate, the rAF loop short-circuits and the canvas stays transparent (so the glows + vignette still show through).
+  - Current page settings: home `12`, workshop `3`, consulting `1`, links `0` + `ship="off"`.
+- **No dock, no palette switcher, no localStorage.** Each page declares exactly what it wants via the data attributes above; there's nothing to persist.
+- **Reduced motion.** `prefers-reduced-motion: reduce` short-circuits canvas init; glows + vignette stay (static). `<html data-reduced-motion="true">` lets CSS suppress any motion.
+- **Identity header.** `.avatar.sm` (80px conic-gradient ring) anchored at the same Y across every page: `<main>` uses `py-12 md:py-16`, `<nav>` has `mb-10`, and the avatar sits at the top of a `text-center` `<header>` with `mx-auto mb-3`. Don't drift these values per page — they're what keeps the avatar from jumping when you click between pages. The base `.avatar` (130px) defined in `base.css` is unused on the live pages, kept only for the design-handoff exploration files. Container width and body layout differ by page purpose:
+  - **`/`** — editorial / expansive at `max-w-prose` (38rem). Centered hero with two-line h1 (line 1 plain `--fg`, line 2 surname is `.aurora-text` clipped to `accent → accent2` gradient — currently invisible because both vars are near-white; harmless), a `.bullet` list, stacked `.featured.lg` callouts for Workshop and Consulting, then `.row-link` "Elsewhere" directory.
+  - **`/workshop/`** — content-dense at `max-w-3xl`. Identity header, editorial hero, curriculum (`.step`), logistics (`.kv`), requirements (`.card` grid), pricing tiers (`.tier`, Standard wrapped in `.tier.featured > .inner`), Formspree interest form (see below), FAQ (`details.qa`).
+  - **`/consulting/`** — content-dense at `max-w-3xl`. Same identity-header pattern. Hero, "The shift" (3-card grid), Approach (steps 01–05 day-1 + day-divider + steps 06–07 day-2), Outcomes (4-card grid), Engagements (two `.tier` cards — Two-day uses `.tier.featured > .inner` for Recommended emphasis), Logistics `.kv` card, FAQ.
+  - **`/links/`** — share-targeted at `max-w-sm` (24rem). Centered identity, stacked `.featured` Workshop + Consulting tiles, then a stack of `.link-btn` rows. Optimized for being pasted into social bios.
 
 ## Directory layout
 
 ```
 .
-├── CNAME                 rollins.io
-├── index.html            home page (no page-specific CSS — all from /shared/)
-├── workshop/
-│   └── index.html        workshop page (no page-specific CSS — .step, .tier, details.qa live in /shared/components.css)
-├── links/
-│   └── index.html        share-targeted link landing (no page-specific CSS)
+├── CNAME                  rollins.io
+├── .nojekyll              tells Pages to serve raw — no Jekyll processing (needed for design-handoff/*.jsx)
+├── index.html             home page
+├── workshop/index.html    workshop page (page-only CSS: .interest-form fields)
+├── consulting/index.html  consulting page (page-only CSS: .day-divider)
+├── links/index.html       share-targeted link landing (no page-specific CSS)
+├── design-handoff/        historical design exploration — React+Babel-in-browser preview, not part of the live site
 └── shared/
-    ├── tailwind-init.js  shared tailwind.config — color tokens reference CSS vars so palette swaps reactively retune Tailwind utilities
-    ├── tokens.css        CSS custom properties on :root (default violet palette), body bg/fg/font, ::selection
-    ├── base.css          .eyebrow, .link, .row-link, .bullet, .card, .avatar (+ .sm modifier), .fade-in, reduced-motion guard
-    ├── components.css    .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .lg), .tier (+ .featured), .step, details.qa
-    ├── aurora-live.css   backdrop scaffold — #aurora-root, canvas, .aurora-glow-*, .aurora-vignette, .aurora-dock; body.aurora-page padding
-    └── aurora-live.js    palette/intensity constants, MatrixRain + Asteroids draw loops, dock builder, localStorage persistence (aurora-live:v1), reduced-motion guard
+    ├── tailwind-init.js   shared tailwind.config — color tokens reference CSS vars
+    ├── tokens.css         CSS custom properties on :root (single white palette), body bg/fg/font, ::selection
+    ├── base.css           .eyebrow, .link, .row-link, .bullet, .card, .avatar (+ .sm modifier), .fade-in, reduced-motion guard
+    ├── components.css     .btn / .btn-primary / .btn-ghost, .kv, .link-btn, .featured (+ .lg), .tier (+ .featured), .step, details.qa
+    ├── aurora-live.css    canvas backdrop scaffold — #aurora-root, canvas, .aurora-glow-*, .aurora-vignette; body.aurora-page padding
+    └── aurora-live.js     asteroid + ship draw loop, reads body data attrs for per-page config, reduced-motion guard
 ```
 
 ## Editing rules
 
-- **Tokens, shared utilities, the fade-in animation, the Aurora Live scaffold, and the Tailwind config live in `/shared/`.** Pages should not need any inline `<style>` block at all — page-specific styles are an exception, not the default.
+- **Tokens, shared utilities, the fade-in animation, the backdrop scaffold, and the Tailwind config live in `/shared/`.** Pages should not need any inline `<style>` block by default — page-specific styles are an exception (e.g. workshop's `.interest-form` inputs, consulting's `.day-divider`).
 - **Never duplicate a class definition between a page and `/shared/`.** If two pages need the same class, move it to `base.css` or `components.css`.
-- Color and font tokens read from CSS custom properties (`--bg`, `--fg`, `--accent`, `--accent2`, `--muted`, etc.). Components must reference these — never hard-code hex values — so palette swaps work end-to-end. Tailwind utilities (`bg-bg`, `text-accent`, `text-accent2`, `border-rule`, `font-mono`, etc.) are wired to the same vars and follow palette changes automatically.
-- The `.featured` and `.tier.featured` classes require a `> .inner` child wrapper to render their gradient-border treatment. Always include `<div class="inner">…</div>` inside.
-- Cross-page links use absolute paths (`/`, `/workshop/`, `/links/`) so they work whether served from `rollins.io` root or a local `python3 -m http.server`.
+- Color and font tokens read from CSS custom properties (`--bg`, `--fg`, `--accent`, `--accent2`, `--muted`, etc.). Components must reference these — never hard-code hex values — so a palette retune (or future multi-palette return) works end-to-end. Tailwind utilities (`bg-bg`, `text-accent`, `text-accent2`, `border-rule`, `font-mono`, etc.) are wired to the same vars.
+- **`.featured` and `.tier.featured` require a `<div class="inner">…</div>` child wrapper.** Without it the gradient outer renders directly and text vanishes against near-white. This is the highest-frequency bug.
+- Cross-page links use absolute paths (`/`, `/workshop/`, `/consulting/`, `/links/`) so they work whether served from `rollins.io` root or a local `python3 -m http.server`.
+- Nav order is `home · workshop · consulting · links` across every page. The current page is rendered as a plain `text-fg` span, others as `link` anchors.
 
 ## Adding a new microsite
 
@@ -81,16 +92,30 @@ The site is themed by the **Aurora Live** treatment (variation #10 in `/design-h
    <script src="/shared/tailwind-init.js"></script>
    <script defer src="/shared/aurora-live.js"></script>
    ```
-3. Add `class="aurora-page"` to `<body>` so the backdrop, glows, vignette, and dock mount correctly and the main content gets the right bottom padding to clear the dock.
-4. Open with the shared centered identity header so the brand reads consistently. Use the large `.avatar` on the home-style front door, `.avatar.sm` on dense content pages:
+3. Add `class="aurora-page"` to `<body>`, plus the per-page backdrop attrs you want:
    ```html
-   <header class="flex flex-col items-center text-center mb-9 fade-in">
-       <a href="/" aria-label="Back to rollins.io" class="avatar sm mb-4">MR</a>
+   <body class="aurora-page antialiased" data-aurora-asteroids="3">
+   ```
+4. Open with the shared top-nav and centered identity header so the brand reads consistently:
+   ```html
+   <nav class="text-center mb-10 fade-in">
+       <div class="eyebrow flex justify-center items-center gap-3 flex-wrap">
+           <a href="/" class="link">home</a>
+           <span class="text-dim">·</span>
+           <a href="/workshop/" class="link">workshop</a>
+           <span class="text-dim">·</span>
+           <a href="/consulting/" class="link">consulting</a>
+           <span class="text-dim">·</span>
+           <a href="/links/" class="link">links</a>
+       </div>
+   </nav>
+   <header class="text-center mb-14 fade-in">
+       <a href="/" aria-label="Back to rollins.io" class="avatar sm mx-auto mb-3">MR</a>
        <div class="eyebrow"><slug> · rollins.io</div>
    </header>
    ```
-5. Compose body sections from the shared vocabulary — `.featured` (gradient-border + `> .inner`) for hero cards, `.bullet` for translucent bullet rows, `.link-btn` for stacked link rows, `.card` + `.kv` for key-value blocks, `.btn-primary` (gradient pill) / `.btn-ghost` for CTAs. Surname-style gradient text uses `linear-gradient(90deg, var(--accent), var(--accent2))` clipped to text (see `.aurora-text` on `/`).
-6. Add a row to the home `Elsewhere` link stack pointing at the new path.
+5. Compose body sections from the shared vocabulary — `.featured` (gradient-border + `> .inner`) for hero cards, `.bullet` for translucent bullet rows, `.link-btn` for stacked link rows, `.card` + `.kv` for key-value blocks, `.step` for numbered walkthroughs, `.tier` (+ `.tier.featured > .inner`) for pricing-or-engagement cards, `details.qa` for FAQs, `.btn-primary` (gradient pill) / `.btn-ghost` for CTAs.
+6. Add `<slug>` to the top nav on the existing four pages, and add a row to home's `Elsewhere` section if it's a "real" destination.
 
 ## Preview locally
 
@@ -101,45 +126,48 @@ cd /Users/rollins/delta-v/web-github-pages/rollins-home
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/`, `http://localhost:8000/workshop/`, `http://localhost:8000/consulting/`, and `http://localhost:8000/links/`.
+Then open `http://localhost:8000/`, `/workshop/`, `/consulting/`, `/links/`.
 
 ## Workshop page — content sync points
 
 When editing `workshop/index.html`:
 
-- Sections: Hero, Curriculum (`#details`), Logistics, Requirements (`#requirements`), Pricing (`#pricing`) with three tiers (Supported $29 / Standard $99 / Supporter $199), Express interest, FAQ. The Standard tier uses `.tier.featured` for accent border + tinted gradient and primary CTA — preserve that emphasis if restyling.
+- Sections: Hero, Curriculum (`#details`), Logistics, Requirements (`#requirements`), Pricing (`#pricing`) with three tiers (Supported $29 / Standard $99 / Supporter $199), Express interest (Formspree form, see below), FAQ. The Standard tier uses `.tier.featured > .inner` for accent border + tinted gradient and primary CTA — preserve that emphasis if restyling.
 - Duration must stay aligned across: hero subhead ("Two hours, live"), Curriculum intro ("first hour … full hour"), Logistics `Format` ("60m build + 60m Q&A"), and FAQ ("60-minute Q&A").
-- Times must stay consistent: hero eyebrow ("09:00 PT") and Logistics card ("09:00 PT · 12:00 ET / 17:00 UK · 21:30 IST").
-- `WORKSHOP_DATE` appears in **four** places that all must update together: home page workshop card, home page (none other), links page featured card, workshop page hero eyebrow + Logistics + (none in footer currently).
+- Times must stay consistent: hero eyebrow (currently `12:00 ET`) and the Logistics card row (`12:00 ET` + the elsewhere row showing `09:00 PT · 21:30 IST · 17:00 WAT`).
+- The workshop date appears in **four** places that must update together: home page Workshop featured card, links page Workshop featured card, workshop page hero eyebrow, workshop page Logistics `Date` row.
 
-## Placeholders to fill before launch
+### Express interest — Formspree form
 
-In `workshop/index.html`:
-- `WORKSHOP_DATE` — hero eyebrow, Logistics card.
-- `WORKSHOP_EMAIL` — "Express interest" `mailto:` link, the plain-text fallback, copy button. Should be a Google Workspace alias on `rollins.io` (no inbound server needed — site stays static).
+The "Express interest" block on `workshop/index.html` is a real form, not a `mailto:`. Endpoint: `https://formspree.io/f/mqenopqj`. Fields: name, email, timezone (optional), notes (optional), plus a `_gotcha` honeypot and a `_subject` hidden input. The submit handler is inline at the bottom of the file — AJAX POST, then swap the form for an inline `#interest-success` block on success or reveal `#interest-error` (which falls back to `mailto:workshop@rollins.io`) on failure.
 
-Stripe Payment Links are live — Payment Links keep the site truly static (no Stripe keys in the repo). Only switch to Stripe.js if a tier needs custom amounts or embedded checkout — and even then only the publishable key would be added (the secret key must never appear in this repo). Current links + caps (sum to a 20-seat cap, enforced via Stripe `restrictions.completed_sessions.limit`):
-  - Supported $29 — `plink_1TUuMdGpOisb6fvvgQcc1fHP`, cap 5, `https://buy.stripe.com/cNi4gz5Z1eED1uC5YE6c000`
-  - Standard $99 — `plink_1TUuMuGpOisb6fvvEr33r45w`, cap 9, `https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001`
-  - Supporter $199 — `plink_1TUuMzGpOisb6fvvpAXyifIL`, cap 6, `https://buy.stripe.com/4gM4gzafh1RR4GOfze6c002`
-  Rebalance per-link caps in the Stripe Dashboard if demand surprises us — keep the sum at 20.
+- Form CSS lives in a small `<style>` block on the workshop page only (`.interest-form .field`, `.lbl`, inputs, `.hp` honeypot positioning). It's the one piece of page-specific CSS this page owns.
+- Hiding the form / showing success/error uses Tailwind's `.hidden` *class*, not the HTML `hidden` attribute — because the form has `display: grid` from a utility class, and `[hidden] { display: none }` is a UA-stylesheet rule that gets overridden by any explicit `display`. Always toggle the class.
 
-In `index.html` (home) and `links/index.html`:
-- `ROLLINS_BIO` (home only)
-- `WORKSHOP_DATE` (both — keep in sync with workshop page)
-- `GITHUB_URL`, `WRITING_URL`, `YOUTUBE_URL`, `X_URL`, `LINKEDIN_URL`, `CAL_URL`, `EMAIL` (both)
+### Stripe Payment Links
+
+Payment Links keep the site truly static (no Stripe keys in the repo). Only switch to Stripe.js if a tier needs custom amounts or embedded checkout — and even then only the publishable key would be added; **the secret key must never appear in this repo**. Current links + caps (sum to a 20-seat cap, enforced via Stripe `restrictions.completed_sessions.limit`):
+
+- Supported $29 — `plink_1TUuMdGpOisb6fvvgQcc1fHP`, cap 5, `https://buy.stripe.com/cNi4gz5Z1eED1uC5YE6c000`
+- Standard $99 — `plink_1TUuMuGpOisb6fvvEr33r45w`, cap 9, `https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001`
+- Supporter $199 — `plink_1TUuMzGpOisb6fvvpAXyifIL`, cap 6, `https://buy.stripe.com/4gM4gzafh1RR4GOfze6c002`
+
+Rebalance per-link caps in the Stripe Dashboard if demand surprises us — keep the sum at 20.
 
 ## Consulting page — content sync points
 
 When editing `consulting/index.html`:
 
-- Sections: Hero, The shift (`#why`), Approach (`#approach`) with Day 1 steps 01–05 + optional Day 2 steps 06–07, Outcomes (`#outcomes`), Format (`#format`), Engagement (`#engage`) with two `.engagement` cards (One-day featured / Two-day), inquiry block (`#contact`), FAQ. The One-day uses `.engagement.featured` for accent border + tinted gradient and primary CTA — preserve that emphasis if restyling.
-- Engagement length must stay aligned across: hero subhead ("One or two days"), Approach intro ("first day stands on its own"), Format card (`Length: One day, or one + one`), Engagement cards (One-day / Two-day), and FAQ ("Can you run this remotely?").
-- The page is intentionally evergreen — no fixed date. All CTAs route to `mailto:CONSULTING_EMAIL`.
+- Sections: Hero, "The shift" (`#why`, 3-card grid), Approach (`#approach`) with Day 1 steps 01–05 + `.day-divider` + optional Day 2 steps 06–07, Outcomes (`#outcomes`, 4-card grid), Engagements (`#engage`) with two `.tier` cards (One-day plain / Two-day uses `.tier.featured > .inner` for Recommended emphasis) followed by a Logistics `.kv` card, FAQ.
+- Engagement length must stay aligned across: hero subhead ("One or two days"), Approach intro ("first day stands on its own"), Engagements section copy, and FAQ ("Can you run this remotely?").
+- The page is intentionally evergreen — no fixed date.
+- All "Inquire" CTAs route to `mailto:contact-me@rollins.io` with engagement-specific subject lines (`Workshop interest — One-day engagement` / `… Two-day engagement`). If a dedicated `consulting@rollins.io` alias is added later, swap those mailtos in.
 
-## Placeholders to fill before launch (consulting)
+## Email aliases
 
-In `consulting/index.html`:
-- `CONSULTING_EMAIL` — every engagement-card CTA, the inquiry block `mailto:`, the plain-text fallback, and the copy button. Should be a Google Workspace alias on `rollins.io` (e.g. `consulting@rollins.io`).
+The site uses Google Workspace aliases on `rollins.io` so no inbound mail server is needed:
 
-No Stripe Payment Links here — engagements are quoted per team. If a productized package ever ships, follow the workshop pattern: a Payment Link per package, no keys in the repo.
+- `workshop@rollins.io` — workshop fallback mailto (inside the Formspree form's error block, and as the "or email" line under the submit button).
+- `contact-me@rollins.io` — general contact (`Email` row on home `Elsewhere` and on the links stack) and consulting Inquire CTAs.
+
+Both route to the single Workspace inbox. Use Gmail filters (`to:workshop@…` → label "Workshop"; `to:contact-me@…` → label "Contact") to sort.
