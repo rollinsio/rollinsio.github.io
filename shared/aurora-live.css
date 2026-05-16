@@ -66,8 +66,63 @@ body.aurora-page footer {
     z-index: 1;
 }
 
+/* ---------- backdrop game toggle ---------- */
+/* Small unobtrusive corner control to swap the self-playing game.
+   Lives outside #aurora-root (which is aria-hidden + pointer-events:none)
+   so it stays focusable/clickable. Token-driven, so it rides the
+   spectrum wave like the rest of the chrome. */
+.aurora-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 45;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.4rem 0.7rem;
+    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgb(var(--bg-rgb) / 0.6);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.25s ease, color 0.25s ease,
+        border-color 0.25s ease, background 0.25s ease;
+    pointer-events: auto;
+}
+.aurora-toggle:hover,
+.aurora-toggle:focus-visible {
+    opacity: 1;
+    color: var(--fg);
+    border-color: rgb(var(--accent-rgb) / 0.6);
+    background: rgb(var(--bg-rgb) / 0.85);
+    outline: none;
+}
+.aurora-toggle-swap {
+    font-size: 0.78rem;
+    line-height: 1;
+    opacity: 0.8;
+}
+@media (max-width: 640px) {
+    .aurora-toggle {
+        font-size: 0.56rem;
+        padding: 0.34rem 0.58rem;
+        opacity: 0.3;
+    }
+}
+
 /* ---------- reduced motion ---------- */
 html[data-reduced-motion="true"] .aurora-glow-a,
 html[data-reduced-motion="true"] .aurora-glow-b {
     filter: blur(70px);
+}
+/* No backdrop loop under reduced motion ⇒ no game to toggle. */
+html[data-reduced-motion="true"] .aurora-toggle {
+    display: none;
 }

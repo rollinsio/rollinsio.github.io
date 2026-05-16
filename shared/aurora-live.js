@@ -1,12 +1,21 @@
-/* Asteroid backdrop. Mounts a fixed-position canvas with a vector-style
-   asteroid field and self-piloting ship onto any page with
-   <body class="aurora-page">. Per-page controls via data attributes:
+/* Self-playing arcade backdrop. Mounts a fixed-position canvas onto any
+   page with <body class="aurora-page">, plus a small corner button that
+   toggles between two vector games:
 
-     data-aurora-asteroids="N"  — asteroid count (default 6, 0 = none)
+     • asteroids        — drifting field + auto-piloting ship
+     • missile command  — auto-battery intercepting incoming missiles
+
+   Per-page controls via data attributes:
+
+     data-aurora-asteroids="N"  — asteroid count (default 6, 0 = none);
+                                  also scales missile-command intensity
      data-aurora-ship="off"     — hide the ship entirely
+     data-aurora-mode="missile" — initial game (default "asteroids")
 
-   No palette switching, no dock, no localStorage. Each page declares
-   exactly what it wants. */
+   The toggle is a runtime switch only — no localStorage, nothing
+   persisted. Each page declares exactly what it wants. Both games read
+   their colours from getComputedStyle(documentElement) so the field
+   stays static white while readable chrome rides the spectrum wave. */
 
 (() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -339,6 +348,304 @@
         };
     }
 
+    // Self-playing Missile Command. A bottom battery + city line; missiles
+    // streak down from the top toward them; an auto-AI fires interceptors
+    // that detonate ahead of the lowest threat, the blast clearing any
+    // missile inside its radius. When every defence is gone the field
+    // pauses then rebuilds — mirrors the asteroids respawn. Friendly
+    // structures + explosions draw in palette.head (white), incoming in
+    // palette.accent, matching the asteroids treatment.
+    function startMissileCommand(canvas, palette, intensity) {
+        const dpr = window.devicePixelRatio || 1;
+        const cssW = canvas.clientWidth;
+        const cssH = canvas.clientHeight;
+        canvas.width = cssW * dpr;
+        canvas.height = cssH * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        const W = cssW, H = cssH;
+        const groundY = H - 14;
+
+        const nCities = Math.max(3, Math.min(6, 3 + Math.round(intensity / 3)));
+        let cities, battery;
+        function buildDefenses() {
+            cities = [];
+            const span = W * 0.74, left = W * 0.13;
+            for (let i = 0; i < nCities; i++) {
+                const x = left + span * (nCities === 1 ? 0.5 : i / (nCities - 1));
+                cities.push({ x, alive: true });
+            }
+            battery = { x: W / 2, alive: true };
+        }
+        buildDefenses();
+
+        const incoming = [], friendly = [], blasts = [];
+        let particles = [];
+        let dead = false, deadAt = 0;
+        let raf, prev = performance.now();
+        const spawnEvery = Math.max(700, 2600 / (0.6 + intensity * 0.28));
+        const maxIncoming = Math.max(3, Math.min(14, 2 + Math.round(intensity)));
+        const maxFriendly = Math.max(2, Math.min(8, 2 + Math.round(intensity / 2)));
+        let nextSpawn = performance.now() + 500, lastAI = 0;
+
+        function aliveTargets() {
+            const t = cities.filter(c => c.alive).map(c => c.x);
+            if (battery.alive) t.push(battery.x);
+            return t;
+        }
+        function spawnIncoming() {
+            const tgts = aliveTargets();
+            if (!tgts.length) return;
+            const ox = 20 + Math.random() * (W - 40);
+            const tx = tgts[(Math.random() * tgts.length) | 0] + (Math.random() - 0.5) * 16;
+            const ang = Math.atan2(groundY - (-12), tx - ox);
+            const sp = 0.42 + Math.random() * 0.34 + intensity * 0.012;
+            incoming.push({
+                ox, oy: -12, x: ox, y: -12,
+                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+                alive: true, targeted: false, targetUntil: 0,
+            });
+        }
+        function detonate(x, y) {
+            blasts.push({ x, y, r: 0, maxR: 24 + Math.random() * 16, phase: 0 });
+        }
+        function sparks(x, y, n, big) {
+            for (let i = 0; i < n; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const s = (big ? 1.4 : 0.8) + Math.random() * (big ? 3.4 : 2.2);
+                const life = 22 + Math.random() * 26;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(a) * s, vy: Math.sin(a) * s - (big ? 0.6 : 0),
+                    ang: Math.random() * Math.PI * 2, va: (Math.random() - 0.5) * 0.4,
+                    len: 3 + Math.random() * 5, life, maxLife: life,
+                });
+            }
+        }
+        function aiFire(now) {
+            if (!battery.alive || friendly.length >= maxFriendly) return;
+            // Most threatening untargeted incoming = the one closest to ground.
+            let best = null, bestProg = -1;
+            for (const m of incoming) {
+                if (!m.alive || (m.targeted && now < m.targetUntil)) continue;
+                const prog = (m.y + 12) / (groundY + 12);
+                if (prog > bestProg) { bestProg = prog; best = m; }
+            }
+            if (!best) return;
+            // Detonate ahead of it, clamped to an altitude band so the
+            // blast meets the missile well above the cities.
+            const dy = Math.max(H * 0.32, Math.min(groundY - 46, best.y + best.vy * 46));
+            const k = best.vy !== 0 ? (dy - best.y) / best.vy : 0;
+            const dx = Math.max(16, Math.min(W - 16, best.x + best.vx * k));
+            const ang = Math.atan2(dy - groundY, dx - battery.x);
+            const sp = 4.4;
+            friendly.push({
+                ox: battery.x, oy: groundY, x: battery.x, y: groundY,
+                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, tx: dx, ty: dy,
+            });
+            best.targeted = true;
+            best.targetUntil = now + 1600;
+        }
+
+        function step(now) {
+            const dt = Math.min(50, now - prev); prev = now;
+            const f = dt / 16;
+
+            ctx.fillStyle = palette.bg;
+            ctx.fillRect(0, 0, W, H);
+
+            if (!dead) {
+                if (now >= nextSpawn && incoming.length < maxIncoming) {
+                    spawnIncoming();
+                    nextSpawn = now + spawnEvery * (0.7 + Math.random() * 0.9);
+                }
+                if (now - lastAI > 300) { aiFire(now); lastAI = now; }
+            }
+
+            // incoming missiles
+            for (let i = incoming.length - 1; i >= 0; i--) {
+                const m = incoming[i];
+                m.x += m.vx * f; m.y += m.vy * f;
+                if (m.y >= groundY) {
+                    m.alive = false;
+                    detonate(m.x, groundY);
+                    sparks(m.x, groundY, 14, true);
+                    let hit = null, hd = 26;
+                    for (const c of cities) {
+                        if (!c.alive) continue;
+                        const d = Math.abs(c.x - m.x);
+                        if (d < hd) { hd = d; hit = c; }
+                    }
+                    if (!hit && battery.alive && Math.abs(battery.x - m.x) < 26) hit = battery;
+                    if (hit) hit.alive = false;
+                    incoming.splice(i, 1);
+                }
+            }
+
+            // interceptors → detonate at their aim point
+            for (let i = friendly.length - 1; i >= 0; i--) {
+                const fr = friendly[i];
+                fr.x += fr.vx * f; fr.y += fr.vy * f;
+                if (Math.hypot(fr.x - fr.tx, fr.y - fr.ty) < 6 || fr.y <= fr.ty) {
+                    detonate(fr.tx, fr.ty);
+                    friendly.splice(i, 1);
+                    continue;
+                }
+                if (fr.y < -20 || fr.x < -20 || fr.x > W + 20) friendly.splice(i, 1);
+            }
+
+            // blasts grow then shrink; clear any incoming inside the radius
+            for (let i = blasts.length - 1; i >= 0; i--) {
+                const b = blasts[i];
+                if (b.phase === 0) { b.r += 1.7 * f; if (b.r >= b.maxR) { b.r = b.maxR; b.phase = 1; } }
+                else { b.r -= 1.15 * f; if (b.r <= 0) { blasts.splice(i, 1); continue; } }
+                for (const m of incoming) {
+                    if (!m.alive) continue;
+                    const dx = m.x - b.x, dy = m.y - b.y;
+                    if (dx * dx + dy * dy < b.r * b.r) {
+                        m.alive = false;
+                        detonate(m.x, m.y);     // chain reaction
+                        sparks(m.x, m.y, 9, false);
+                    }
+                }
+            }
+            for (let i = incoming.length - 1; i >= 0; i--) {
+                if (!incoming[i].alive) incoming.splice(i, 1);
+            }
+
+            // ground line
+            ctx.strokeStyle = palette.accent;
+            ctx.globalAlpha = 0.16;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, groundY + 6);
+            ctx.lineTo(W, groundY + 6);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            // cities + battery (white, like the ship)
+            ctx.strokeStyle = palette.head;
+            ctx.shadowColor = palette.head;
+            ctx.shadowBlur = 6;
+            ctx.lineWidth = 1.4;
+            for (const c of cities) {
+                if (!c.alive) continue;
+                ctx.beginPath();
+                ctx.moveTo(c.x - 9, groundY + 5);
+                ctx.lineTo(c.x - 9, groundY - 4);
+                ctx.lineTo(c.x - 4, groundY - 4);
+                ctx.lineTo(c.x - 4, groundY - 10);
+                ctx.lineTo(c.x + 4, groundY - 10);
+                ctx.lineTo(c.x + 4, groundY - 4);
+                ctx.lineTo(c.x + 9, groundY - 4);
+                ctx.lineTo(c.x + 9, groundY + 5);
+                ctx.stroke();
+            }
+            if (battery.alive) {
+                ctx.beginPath();
+                ctx.moveTo(battery.x - 11, groundY + 5);
+                ctx.lineTo(battery.x, groundY - 12);
+                ctx.lineTo(battery.x + 11, groundY + 5);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            ctx.shadowBlur = 0;
+
+            // incoming trails (accent)
+            ctx.strokeStyle = palette.accent;
+            ctx.fillStyle = palette.accent;
+            ctx.shadowColor = palette.accent;
+            ctx.shadowBlur = 6;
+            ctx.lineWidth = 1.3;
+            for (const m of incoming) {
+                ctx.beginPath();
+                ctx.moveTo(m.ox, m.oy);
+                ctx.lineTo(m.x, m.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.shadowBlur = 0;
+
+            // interceptor trails (white)
+            ctx.strokeStyle = palette.head;
+            ctx.fillStyle = palette.head;
+            ctx.shadowColor = palette.head;
+            ctx.shadowBlur = 6;
+            for (const fr of friendly) {
+                ctx.beginPath();
+                ctx.moveTo(fr.ox, fr.oy);
+                ctx.lineTo(fr.x, fr.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(fr.x, fr.y, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.shadowBlur = 0;
+
+            // blasts — glowing ring + faint fill
+            for (const b of blasts) {
+                const r = Math.max(0, b.r);
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = palette.head;
+                ctx.globalAlpha = 0.06;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = palette.head;
+                ctx.lineWidth = 1.6;
+                ctx.shadowColor = palette.head;
+                ctx.shadowBlur = 12;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // debris shards
+            if (particles.length) {
+                ctx.strokeStyle = palette.head;
+                ctx.lineWidth = 1.5;
+                ctx.shadowColor = palette.head;
+                ctx.shadowBlur = 7;
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx * f;
+                    p.y += p.vy * f;
+                    const pf = Math.pow(0.95, f);
+                    p.vx *= pf; p.vy *= pf; p.vy += 0.04 * f;
+                    p.ang += p.va * f;
+                    p.life -= f;
+                    if (p.life <= 0) { particles.splice(i, 1); continue; }
+                    ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.ang);
+                    ctx.beginPath();
+                    ctx.moveTo(-p.len / 2, 0);
+                    ctx.lineTo(p.len / 2, 0);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
+            }
+
+            // every defence gone → pause, then rebuild the field
+            if (!dead) {
+                if (!battery.alive && !cities.some(c => c.alive)) { dead = true; deadAt = now; }
+            } else if (now - deadAt > 1200 && incoming.length === 0 && blasts.length === 0 && particles.length === 0) {
+                buildDefenses();
+                friendly.length = 0;
+                dead = false;
+            }
+
+            raf = requestAnimationFrame(step);
+        }
+        raf = requestAnimationFrame(step);
+
+        return () => { cancelAnimationFrame(raf); };
+    }
+
     function buildRoot() {
         const root = document.createElement('div');
         root.id = 'aurora-root';
@@ -355,16 +662,54 @@
 
     let canvasEl = null;
     let stopFn = null;
+    let toggleEl = null;
     let config = { count: 6, shipOff: false };
+    let mode = 'asteroids';
+
+    // True when the current mode actually animates something. Asteroids
+    // with an empty field + no ship (the links page) draws nothing, so it
+    // gets no canvas loop and no toggle; missile command always plays.
+    function backdropActive() {
+        if (reducedMotion) return false;
+        if (mode === 'missile') return true;
+        return !(config.count === 0 && config.shipOff);
+    }
 
     function startBackdrop() {
         if (stopFn) { stopFn(); stopFn = null; }
-        if (reducedMotion) return;
-        if (!canvasEl) return;
-        // Nothing to animate? Leave canvas transparent; glows + vignette stay.
-        if (config.count === 0 && config.shipOff) return;
+        if (reducedMotion || !canvasEl) return;
         const palette = readPalette();
-        stopFn = startAsteroids(canvasEl, palette, config.count, config.shipOff);
+        if (mode === 'missile') {
+            stopFn = startMissileCommand(canvasEl, palette, Math.max(1, config.count || 1));
+        } else {
+            // Nothing to animate? Leave canvas transparent; glows + vignette stay.
+            if (config.count === 0 && config.shipOff) return;
+            stopFn = startAsteroids(canvasEl, palette, config.count, config.shipOff);
+        }
+    }
+
+    // The label names the game you'd switch *to*, paired with the ⇄ glyph.
+    function otherMode() { return mode === 'asteroids' ? 'missile command' : 'asteroids'; }
+    function syncToggle() {
+        if (!toggleEl) return;
+        toggleEl.querySelector('.aurora-toggle-label').textContent = otherMode();
+        toggleEl.setAttribute('aria-label', 'Switch backdrop to ' + otherMode());
+    }
+    function buildToggle() {
+        if (toggleEl || !backdropActive()) return;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'aurora-toggle';
+        b.innerHTML = '<span class="aurora-toggle-swap" aria-hidden="true">⇄</span>'
+            + '<span class="aurora-toggle-label"></span>';
+        b.addEventListener('click', () => {
+            mode = mode === 'asteroids' ? 'missile' : 'asteroids';
+            syncToggle();
+            startBackdrop();
+        });
+        document.body.appendChild(b);
+        toggleEl = b;
+        syncToggle();
     }
 
     let resizeTimer;
@@ -384,9 +729,12 @@
             if (Number.isFinite(n) && n >= 0) config.count = n;
         }
         if (body.getAttribute('data-aurora-ship') === 'off') config.shipOff = true;
+        const m = body.getAttribute('data-aurora-mode');
+        if (m === 'missile' || m === 'asteroids') mode = m;
 
         canvasEl = buildRoot();
         startBackdrop();
+        buildToggle();
         window.addEventListener('resize', onResize);
     }
 
