@@ -67,6 +67,8 @@
 
         let asteroids = Array.from({ length: count }, () => makeAsteroid(3));
         const bullets = [];
+        let particles = [];           // explosion debris
+        let dead = false, deadAt = 0; // ship destroyed → awaiting respawn
         let raf, prev = performance.now(), lastShot = 0;
 
         function step(now) {
@@ -80,7 +82,7 @@
             // thrust scaled by alignment. Friction + max-speed cap give it
             // inertia; the ship coasts past targets and curves back instead
             // of teleporting.
-            if (!shipOff) {
+            if (!shipOff && !dead) {
                 let targetX, targetY;
                 if (pointer.active && now - pointer.lastSeen < 2500) {
                     targetX = pointer.x;
@@ -163,6 +165,31 @@
                         }
                     }
                 }
+
+                // Ship vs. asteroid: blow the ship into spinning debris.
+                for (const a of asteroids) {
+                    const cx = a.x - ship.x, cy = a.y - ship.y;
+                    if (cx * cx + cy * cy < (a.radius + 8) * (a.radius + 8)) {
+                        dead = true;
+                        deadAt = now;
+                        ship.thrusting = false;
+                        for (let i = 0; i < 24; i++) {
+                            const pa = Math.random() * Math.PI * 2;
+                            const ps = 1 + Math.random() * 3.6;
+                            const life = 34 + Math.random() * 30;
+                            particles.push({
+                                x: ship.x, y: ship.y,
+                                vx: Math.cos(pa) * ps + ship.vx * 0.4,
+                                vy: Math.sin(pa) * ps + ship.vy * 0.4,
+                                ang: Math.random() * Math.PI * 2,
+                                va: (Math.random() - 0.5) * 0.35,
+                                len: 4 + Math.random() * 7,
+                                life, maxLife: life,
+                            });
+                        }
+                        break;
+                    }
+                }
             }
 
             // asteroids
@@ -228,7 +255,7 @@
             ctx.shadowBlur = 0;
 
             // ship
-            if (!shipOff) {
+            if (!shipOff && !dead) {
                 ctx.save();
                 ctx.translate(ship.x, ship.y);
                 ctx.rotate(ship.angle);
@@ -252,6 +279,50 @@
                 }
                 ctx.shadowBlur = 0;
                 ctx.restore();
+            }
+
+            // explosion debris — short shards that spin out and fade
+            if (particles.length) {
+                ctx.strokeStyle = palette.head;
+                ctx.lineWidth = 1.6;
+                ctx.shadowColor = palette.head;
+                ctx.shadowBlur = 8;
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx * f;
+                    p.y += p.vy * f;
+                    const pf = Math.pow(0.97, f);
+                    p.vx *= pf;
+                    p.vy *= pf;
+                    p.ang += p.va * f;
+                    p.life -= f;
+                    if (p.life <= 0) { particles.splice(i, 1); continue; }
+                    ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.ang);
+                    ctx.beginPath();
+                    ctx.moveTo(-p.len / 2, 0);
+                    ctx.lineTo(p.len / 2, 0);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
+            }
+
+            // once the debris clears, respawn a fresh field + ship
+            if (dead && now - deadAt > 900 && particles.length === 0) {
+                ship.x = W / 2;
+                ship.y = H / 2;
+                ship.vx = 0;
+                ship.vy = 0;
+                ship.angle = 0;
+                ship.thrusting = false;
+                ship.drift = Math.random() * 1000;
+                asteroids = Array.from({ length: count }, () => makeAsteroid(3));
+                bullets.length = 0;
+                dead = false;
             }
 
             raf = requestAnimationFrame(step);

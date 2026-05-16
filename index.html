@@ -3,12 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Rollins</title>
-    <meta name="description" content="Michael Rollins — builder, engineer. Workshop, code, writing, and a way to get in touch.">
-    <meta property="og:title" content="Michael Rollins">
-    <meta property="og:description" content="Builder, engineer, and host of the Δ-V live-build workshop.">
+    <title>Michael Rollins — Agents Building Agents</title>
+    <meta name="description" content="Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&A.">
+    <meta property="og:title" content="Agents Building Agents — live workshop">
+    <meta property="og:description" content="Two hours, live. 60 minutes of coding on screen — build an agent with Python — then 60 minutes of deep Q&A.">
     <meta property="og:url" content="https://rollins.io/">
     <meta name="twitter:card" content="summary">
+    <!--
+      Seat caps (live, enforced by Stripe restrictions.completed_sessions.limit):
+        Supported (plink_1TUuMdGpOisb6fvvgQcc1fHP) — 5
+        Standard  (plink_1TUuMuGpOisb6fvvEr33r45w) — 9
+        Supporter (plink_1TUuMzGpOisb6fvvpAXyifIL) — 6
+        Total = 20. Adjust per-link caps in the Stripe Dashboard if rebalancing.
+
+      Duration is referenced in three places that must stay in sync:
+        - Hero subhead ("Two hours, live")
+        - Curriculum intro paragraph ("first hour … full hour")
+        - Logistics "Format" line ("60m build + 60m Q&A")
+        - FAQ ("60-minute Q&A")
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,130 +32,336 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/shared/tailwind-init.js"></script>
     <script defer src="/shared/aurora-live.js"></script>
+    <script defer src="/shared/spectrum-wave.js"></script>
     <style>
-        .aurora-text {
-            background: linear-gradient(90deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
+        /* Interest form — workshop page only */
+        .interest-form .field { display: flex; flex-direction: column; gap: 0.4rem; }
+        .interest-form .lbl {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
             font-weight: 500;
         }
+        .interest-form input,
+        .interest-form textarea {
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--fg);
+            background: rgb(var(--bg-rgb) / 0.45);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            width: 100%;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .interest-form textarea { resize: vertical; min-height: 5rem; line-height: 1.4; }
+        .interest-form input:focus,
+        .interest-form textarea:focus {
+            outline: none;
+            border-color: rgb(var(--accent-rgb) / 0.7);
+            background: rgb(var(--bg-rgb) / 0.6);
+        }
+        .interest-form input::placeholder,
+        .interest-form textarea::placeholder { color: var(--dim); }
+        .interest-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
     </style>
 </head>
-<body class="aurora-page antialiased" data-aurora-asteroids="12">
+<body class="aurora-page antialiased" data-aurora-asteroids="3">
 
-    <main class="max-w-prose mx-auto px-6 py-12 md:py-16">
+    <main class="max-w-3xl mx-auto px-6 py-12 md:py-16">
 
         <!-- Top nav -->
         <nav class="text-center mb-10 fade-in">
             <div class="eyebrow flex justify-center items-center gap-3">
                 <span class="text-fg">home</span>
                 <span class="text-dim">·</span>
-                <a href="/workshop/" class="link">workshop</a>
-                <span class="text-dim">·</span>
                 <a href="/consulting/" class="link">consulting</a>
                 <span class="text-dim">·</span>
                 <a href="/links/" class="link">links</a>
+                <span class="text-dim">·</span>
+                <a href="/about/" class="link">about</a>
             </div>
         </nav>
 
         <!-- Identity -->
-        <header class="text-center mb-12 fade-in">
+        <header class="text-center mb-14 fade-in">
             <div class="avatar sm mx-auto mb-3" aria-hidden="true">MR</div>
             <div class="eyebrow">rollins.io</div>
         </header>
 
         <!-- Hero -->
-        <section class="mb-14 text-center">
-            <h1 class="text-5xl md:text-6xl font-medium tracking-tight leading-[0.95] mb-7 fade-in" style="animation-delay:0.05s">
-                Michael<br>
-                <span class="aurora-text">Rollins</span>
+        <header class="mb-20">
+            <div class="eyebrow mb-4 fade-in" style="text-transform:none">
+                <span class="text-accent">●</span>&nbsp;&nbsp;Live Working Session · Thursday, May 21 · 12:00 ET
+            </div>
+            <h1 class="text-4xl md:text-5xl font-medium tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
+                Agents building Agents
             </h1>
-            <p class="text-fg text-lg leading-relaxed mb-7 fade-in" style="animation-delay:0.08s">
-                Pragmatic engineer and CTO shaping best practices for agentic engineering.
+            <p class="text-fg text-lg leading-relaxed mb-3 max-w-prose fade-in" style="animation-delay:0.1s">
+                Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.
             </p>
-            <ul class="flex flex-col gap-2.5 mb-7 text-left fade-in" style="animation-delay:0.1s">
-                <li class="bullet">Scaled Flurry by Yahoo to 5 billion daily sessions</li>
-                <li class="bullet">Now: agentic systems at Rellify and FD</li>
-                <li class="bullet">Early AI at Outlier</li>
-                <li class="bullet">iOS, Android, backend, frontend, infrastructure</li>
-            </ul>
-            <p class="text-muted text-base leading-relaxed fade-in" style="animation-delay:0.12s">
-                Builder, engineer, and host of the Δ-V live-build workshop.
+            <p class="text-muted leading-relaxed mb-8 max-w-prose fade-in" style="animation-delay:0.12s">
+                Stop just prompting LLMs. Watch agents build an agent harness — then adapt it to your stack.
             </p>
+            <div class="flex flex-wrap gap-3 fade-in" style="animation-delay:0.15s">
+                <a href="#pricing" class="btn btn-primary">Get a seat <span aria-hidden="true">→</span></a>
+                <a href="#details" class="btn btn-ghost">Read the brief</a>
+            </div>
+        </header>
+
+        <!-- Curriculum -->
+        <section id="details" class="mb-20">
+            <div class="eyebrow mb-3">Curriculum</div>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Two hours, one harness, real code on screen.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                This isn't a slide deck. We spend the first hour building together, then a full hour of deep Q&amp;A. The starter codebase is shared at the start of the session — your environment just needs to be ready (see <a href="#requirements" class="link">Requirements</a>).
+            </p>
+
+            <div class="step"><span class="idx">01</span><div><div class="title">The Sandbox</div><div class="body">A Python execution environment running in Docker.</div></div></div>
+            <div class="step"><span class="idx">02</span><div><div class="title">The Loop</div><div class="body">Wiring an LLM to write, run, and read code output.</div></div></div>
+            <div class="step"><span class="idx">03</span><div><div class="title">The Memory</div><div class="body">A RAG database so the agent can look things up.</div></div></div>
+            <div class="step"><span class="idx">04</span><div><div class="title">The Handoff</div><div class="body">Extra tools, then adapting the harness for your stack.</div></div></div>
         </section>
 
-        <!-- Featured: Workshop -->
-        <section class="mb-6 fade-in" style="animation-delay:0.15s">
-            <a href="/workshop/" class="featured lg">
-                <div class="inner">
-                    <div class="top">
-                        <span class="badge">◆ Upcoming workshop · Thursday, May 21</span>
-                        <span class="arrow">→</span>
-                    </div>
-                    <div class="title">Agents building Agents</div>
-                    <div class="meta">Two hours, live. 60 minutes of coding on screen — Build an agent with Python — then 60 minutes of deep Q&amp;A.</div>
+        <!-- Logistics -->
+        <section class="mb-20">
+            <div class="eyebrow mb-3">Logistics</div>
+            <div class="card p-6">
+                <div class="kv"><span class="k">Date</span><span class="v">Thursday, May 21</span></div>
+                <div class="kv"><span class="k">Start</span><span class="v">12:00 ET</span></div>
+                <div class="kv"><span class="k">Elsewhere</span><span class="v">09:00 PT · 21:30 IST · 17:00 WAT</span></div>
+                <div class="kv"><span class="k">Format</span><span class="v">60m build + 60m Q&amp;A</span></div>
+                <div class="kv"><span class="k">Venue</span><span class="v">Zoom (link on purchase)</span></div>
+                <div class="kv"><span class="k">Replay</span><span class="v">Included</span></div>
+            </div>
+        </section>
+
+        <!-- Requirements -->
+        <section id="requirements" class="mb-20">
+            <div class="eyebrow mb-3">Prerequisites</div>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Show up ready.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                We're building for the full first hour, so your environment has to be ready when we kick off. We won't have time to help you set up live.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="card p-5">
+                    <div class="eyebrow mb-3">A · What you should know</div>
+                    <ul class="space-y-2.5 text-sm leading-relaxed">
+                        <li class="text-fg"><span class="text-fg font-medium">Python</span> and/or <span class="text-fg font-medium">JavaScript / TypeScript</span> — comfortable reading and writing code, and with how API calls work.</li>
+                        <li class="text-fg">Access to an LLM. Strongly preferred: <span class="text-fg font-medium">Claude Code</span>, <span class="text-fg font-medium">Codex</span>, or <span class="text-fg font-medium">Cursor</span>.</li>
+                    </ul>
                 </div>
-            </a>
-        </section>
 
-        <!-- Featured: Consulting -->
-        <section class="mb-16 fade-in" style="animation-delay:0.18s">
-            <a href="/consulting/" class="featured lg">
-                <div class="inner">
-                    <div class="top">
-                        <span class="badge">● Bring this to your team</span>
-                        <span class="arrow">→</span>
-                    </div>
-                    <div class="title">Consulting &amp; working sessions</div>
-                    <div class="meta">Onsite or remote, one or two days. Your team builds something real, the structural pain surfaces, and you walk out with a private debrief on team dynamics.</div>
+                <div class="card p-5">
+                    <div class="eyebrow mb-3">B · Install in advance</div>
+                    <ul class="space-y-2.5 text-sm leading-relaxed">
+                        <li class="text-fg"><span class="text-fg font-medium">Docker</span>, installed and running.</li>
+                        <li class="text-fg">A working <span class="text-fg font-medium">Python</span> toolchain — <code class="font-mono text-xs text-accent2">python</code> + <code class="font-mono text-xs text-accent2">pip</code> or <code class="font-mono text-xs text-accent2">uv</code>.</li>
+                        <li class="text-fg">A working <span class="text-fg font-medium">Node.js</span> toolchain — <code class="font-mono text-xs text-accent2">node</code> + <code class="font-mono text-xs text-accent2">npm</code> / <code class="font-mono text-xs text-accent2">pnpm</code> / <code class="font-mono text-xs text-accent2">bun</code>.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">Git</span>, for cloning the starter codebase.</li>
+                        <li class="text-fg"><span class="text-fg font-medium">API key with credits</span> on whichever LLM provider you'll use.</li>
+                    </ul>
+                    <p class="text-muted text-xs mt-4 pt-3 border-t border-rule leading-relaxed">
+                        <span class="text-accent">Heads up</span> — the sandbox and RAG db each pull a Docker image. A few GB of free disk and some RAM headroom makes things smoother.
+                    </p>
                 </div>
-            </a>
+            </div>
         </section>
 
-        <!-- Elsewhere -->
-        <section class="mb-16 fade-in" style="animation-delay:0.2s">
-            <div class="eyebrow mb-4">Elsewhere</div>
+        <!-- Pricing -->
+        <section id="pricing" class="mb-20">
+            <div class="eyebrow mb-3">Tickets</div>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Pricing that makes sense globally.</h2>
+            <p class="text-muted leading-relaxed mb-8 max-w-prose">
+                I want to make this accessible globally while keeping the session high-signal. Choose the tier that fits your situation.
+            </p>
 
-            <a href="https://github.com/rollinsio" class="row-link">
-                <span class="label">GitHub</span>
-                <span class="desc">Starter AI projects and other work</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://www.youtube.com/@MichaelRollins" class="row-link">
-                <span class="label">YouTube</span>
-                <span class="desc">Former drone content, upcoming AI content</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://www.youtube.com/@WillAISnapThat" class="row-link">
-                <span class="label">Will AI Snap That</span>
-                <span class="desc">A podcast about AI and your engineering job</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://www.instagram.com/rollins.io/" class="row-link">
-                <span class="label">Instagram</span>
-                <span class="desc">The hot takes that cause just a bit of rage</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://www.linkedin.com/in/rollinsmichael/" class="row-link">
-                <span class="label">LinkedIn</span>
-                <span class="desc">Professional work</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="mailto:contact-me@rollins.io" class="row-link">
-                <span class="label">Email</span>
-                <span class="desc">contact-me@rollins.io</span>
-                <span class="arrow">→</span>
-            </a>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="tier">
+                    <div class="tier-eyebrow"><span class="label">Supported</span><span>Student · Global</span></div>
+                    <div class="price"><span class="currency">$</span>29</div>
+                    <p class="blurb">For students, new grads, or builders in countries where $99 doesn't map to local purchasing power.</p>
+                    <ul>
+                        <li>Live access + Q&amp;A</li>
+                        <li>Starter framework code</li>
+                        <li>Unlisted replay + notes</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/cNi4gz5Z1eED1uC5YE6c000" class="btn btn-ghost">Get supported ticket</a>
+                </div>
+
+                <div class="tier featured">
+                    <div class="inner">
+                        <div class="tier-eyebrow"><span class="label">Standard · Recommended</span><span>Engineer · Founder</span></div>
+                        <div class="price"><span class="currency">$</span>99</div>
+                        <p class="blurb">For most professional engineers, builders, and technical founders.</p>
+                        <ul>
+                            <li>Live access + Q&amp;A</li>
+                            <li>Starter framework code</li>
+                            <li>Unlisted replay + notes</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001" class="btn btn-primary">Get standard ticket</a>
+                    </div>
+                </div>
+
+                <div class="tier">
+                    <div class="tier-eyebrow"><span class="label">Supporter</span><span>Patron</span></div>
+                    <div class="price"><span class="currency">$</span>199</div>
+                    <p class="blurb">For those who want to support my work and subsidize access for others.</p>
+                    <ul>
+                        <li>All Standard access</li>
+                        <li>Helps subsidize a Supported seat</li>
+                        <li>Unlocks a free 60m New Grad Clinic if all 6 Supporter seats sell</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/4gM4gzafh1RR4GOfze6c002" class="btn btn-ghost">Become a supporter</a>
+                </div>
+            </div>
+
+            <!-- Express interest -->
+            <div id="interest" class="card p-6 mt-6 scroll-mt-8">
+                <div class="mb-5">
+                    <div id="interest-eyebrow" class="eyebrow mb-2">Not ready to commit?</div>
+                    <h3 id="interest-heading" class="text-lg font-medium mb-1.5">Get the early-bird heads-up.</h3>
+                    <p id="interest-blurb" class="text-muted text-sm leading-relaxed">Drop me a line and I'll add you to the list. You'll get the date confirmation, the starter framework preview, and a heads-up before tickets go live.</p>
+                </div>
+
+                <form id="interest-form" action="https://formspree.io/f/mqenopqj" method="POST" class="interest-form grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="field">
+                        <span class="lbl">Name</span>
+                        <input type="text" name="name" required autocomplete="name">
+                    </label>
+                    <label class="field">
+                        <span class="lbl">Email</span>
+                        <input type="email" name="email" required autocomplete="email">
+                    </label>
+                    <label class="field sm:col-span-2">
+                        <span class="lbl">Timezone <span class="text-dim normal-case tracking-normal">(optional)</span></span>
+                        <input type="text" name="timezone" placeholder="e.g. ET, PT, IST">
+                    </label>
+                    <label class="field sm:col-span-2">
+                        <span class="lbl">Notes or questions <span class="text-dim normal-case tracking-normal">(optional)</span></span>
+                        <textarea name="notes" rows="3"></textarea>
+                    </label>
+                    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+                    <input type="hidden" id="interest-subject" name="_subject" value="Workshop interest — Agents Building Agents">
+                    <div class="sm:col-span-2 mt-1">
+                        <button type="submit" class="btn btn-primary">Send <span aria-hidden="true">→</span></button>
+                    </div>
+                </form>
+
+                <div id="interest-success" class="hidden">
+                    <div class="eyebrow mb-2" style="color: var(--accent2)">Got it</div>
+                    <h3 class="text-lg font-medium mb-1.5">You're on the list.</h3>
+                    <p class="text-muted text-sm leading-relaxed">Thanks — I'll be in touch with the date confirmation and the starter framework preview before tickets go live.</p>
+                </div>
+
+                <div id="interest-error" class="hidden mt-4">
+                    <p class="text-sm leading-relaxed">Something went wrong sending that. Email me directly at <a href="mailto:workshop@rollins.io" class="link font-mono">workshop@rollins.io</a> and I'll add you manually.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-20">
+            <div class="eyebrow mb-3">FAQ</div>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-6">Questions, asked &amp; answered.</h2>
+
+            <details class="qa">
+                <summary>Do I need to be a Python expert?</summary>
+                <div class="ans">No. Basic Python and/or JavaScript / TypeScript is enough — comfortable reading and writing code and with how API calls work. You don't need to be a machine learning engineer.</div>
+            </details>
+            <details class="qa">
+                <summary>Will you review my specific project?</summary>
+                <div class="ans">During the 60-minute Q&amp;A, you can ask specific questions about adapting this framework to your use case. Submit your questions early (link provided after checkout) to ensure we get to them.</div>
+            </details>
+            <details class="qa">
+                <summary>What happens after I pay?</summary>
+                <div class="ans">You'll be redirected to a page with the calendar invite and a quick form to submit your advance questions. The starter codebase is shared at the start of the session — make sure your environment is ready before then (see <a href="#requirements" class="link">Requirements</a>).</div>
+            </details>
+            <details class="qa">
+                <summary>What if I can't make it live?</summary>
+                <div class="ans">All tiers include the unlisted replay and notes. The Q&amp;A questions you submit in advance are answered on the recording even if you watch async.</div>
+            </details>
         </section>
 
         <!-- Footer -->
-        <footer class="text-dim text-sm">
-            © 2026 · rollins.io
+        <footer class="text-dim text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <span>Δ-V Workshop · <a href="/" class="link">rollins.io</a></span>
+            <span>© 2026</span>
         </footer>
 
     </main>
+
+    <script>
+        (function () {
+            const form = document.getElementById('interest-form');
+            const success = document.getElementById('interest-success');
+            const error = document.getElementById('interest-error');
+            if (!form) return;
+
+            // Every contact CTA on the site funnels into this one form. The
+            // `for` query param carries intent so it serves all of them with
+            // the right subject + framing. No param = the workshop default.
+            const CTX = {
+                contact: {
+                    subject: 'Contact — rollins.io',
+                    eyebrow: 'Get in touch',
+                    heading: 'Send me a message.',
+                    blurb: "Tell me what you're working on or what you need — I'll get back to you."
+                },
+                'consulting-one-day': {
+                    subject: 'Consulting interest — One-day engagement',
+                    eyebrow: 'Consulting · one day',
+                    heading: 'Tell me about your team.',
+                    blurb: "A few lines on org size, stack, and timeline. I'll follow up with a quote and next steps."
+                },
+                'consulting-two-day': {
+                    subject: 'Consulting interest — Two-day engagement',
+                    eyebrow: 'Consulting · two days',
+                    heading: 'Tell me about your team.',
+                    blurb: "A few lines on org size, stack, and timeline. I'll follow up with a quote and next steps."
+                }
+            };
+            const ctx = CTX[new URLSearchParams(location.search).get('for')];
+            if (ctx) {
+                const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+                const subj = document.getElementById('interest-subject');
+                if (subj) subj.value = ctx.subject;
+                set('interest-eyebrow', ctx.eyebrow);
+                set('interest-heading', ctx.heading);
+                set('interest-blurb', ctx.blurb);
+                requestAnimationFrame(() =>
+                    document.getElementById('interest').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                const originalLabel = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = 'Sending…';
+                error.classList.add('hidden');
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!res.ok) throw new Error('non-2xx');
+                    form.classList.add('hidden');
+                    success.classList.remove('hidden');
+                    success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } catch {
+                    error.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = originalLabel;
+                }
+            });
+        })();
+    </script>
 
 </body>
 </html>
