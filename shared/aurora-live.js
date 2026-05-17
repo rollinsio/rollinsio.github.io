@@ -3,7 +3,7 @@
    toggles between two vector games:
 
      • asteroids        — drifting field + auto-piloting ship
-     • missile command  — auto-battery intercepting incoming missiles
+     • missile command  — 3 bases (auto + click-to-strike) vs missiles
 
    Per-page controls via data attributes:
 
@@ -348,13 +348,15 @@
         };
     }
 
-    // Self-playing Missile Command. A bottom battery + city line; missiles
-    // streak down from the top toward them; an auto-AI fires interceptors
-    // that detonate ahead of the lowest threat, the blast clearing any
-    // missile inside its radius. When every defence is gone the field
-    // pauses then rebuilds — mirrors the asteroids respawn. Friendly
-    // structures + explosions draw in palette.head (white), incoming in
-    // palette.accent, matching the asteroids treatment.
+    // Self-playing Missile Command, faithful to the 1980 arcade economy:
+    // three bases (left / centre / right) with 10 missiles each — 30 per
+    // wave — refilled and revived at the start of every wave; the centre
+    // base fires fast interceptors, the sides slow. Cities persist across
+    // waves (game over = all cities gone → full rebuild). An auto-AI fires
+    // at the lowest threat; **a mouse click commands a strike on that
+    // exact spot** from the nearest base with ammo, otherwise the AI
+    // fires as it sees fit. Friendly structures + explosions draw in
+    // palette.head (white), incoming in palette.accent.
     function startMissileCommand(canvas, palette, intensity) {
         const dpr = window.devicePixelRatio || 1;
         const cssW = canvas.clientWidth;
@@ -365,17 +367,29 @@
         ctx.scale(dpr, dpr);
         const W = cssW, H = cssH;
         const groundY = H - 14;
+        const AMMO = 10; // per base, per wave — 3 bases ⇒ 30 per wave
 
         const nCities = Math.max(3, Math.min(6, 3 + Math.round(intensity / 3)));
-        let cities, battery;
+        let cities, bases;
+        function spread(k, a, b) {
+            const xs = [];
+            for (let i = 0; i < k; i++) xs.push(k === 1 ? (a + b) / 2 : a + (b - a) * i / (k - 1));
+            return xs;
+        }
+        // Bases at the edges + centre; cities in two clusters between them
+        // (the classic base · city·city·city · base · city·city·city · base).
+        function buildBases() {
+            bases = [
+                { x: Math.max(24, W * 0.06), ammo: AMMO, alive: true, fast: false },
+                { x: W * 0.5, ammo: AMMO, alive: true, fast: true },
+                { x: Math.min(W - 24, W * 0.94), ammo: AMMO, alive: true, fast: false },
+            ];
+        }
         function buildDefenses() {
-            cities = [];
-            const span = W * 0.74, left = W * 0.13;
-            for (let i = 0; i < nCities; i++) {
-                const x = left + span * (nCities === 1 ? 0.5 : i / (nCities - 1));
-                cities.push({ x, alive: true });
-            }
-            battery = { x: W / 2, alive: true };
+            const lN = Math.ceil(nCities / 2), rN = nCities - lN;
+            cities = spread(lN, W * 0.17, W * 0.40).concat(spread(rN, W * 0.60, W * 0.83))
+                .map(x => ({ x, alive: true }));
+            buildBases();
         }
         buildDefenses();
 
@@ -385,12 +399,18 @@
         let raf, prev = performance.now();
         const spawnEvery = Math.max(700, 2600 / (0.6 + intensity * 0.28));
         const maxIncoming = Math.max(3, Math.min(14, 2 + Math.round(intensity)));
-        const maxFriendly = Math.max(2, Math.min(8, 2 + Math.round(intensity / 2)));
         let nextSpawn = performance.now() + 500, lastAI = 0;
+
+        // Discrete waves: a fixed quota of incoming, then bases revive +
+        // rearm. Ammo (30/wave) and AI cadence pace things — no concurrency cap.
+        let wave = 1, waveSpawned = 0;
+        const quotaFor = w => Math.min(22, 4 + Math.round(intensity) + (w - 1));
+        let waveQuota = quotaFor(1);
+        let interWave = false, interWaveAt = 0;
 
         function aliveTargets() {
             const t = cities.filter(c => c.alive).map(c => c.x);
-            if (battery.alive) t.push(battery.x);
+            for (const b of bases) if (b.alive) t.push(b.x);
             return t;
         }
         function spawnIncoming() {
@@ -422,8 +442,27 @@
                 });
             }
         }
+        // Nearest alive base with ammo to a target x (null if none can fire).
+        function pickBase(x) {
+            let best = null, bd = Infinity;
+            for (const b of bases) {
+                if (!b.alive || b.ammo <= 0) continue;
+                const d = Math.abs(b.x - x);
+                if (d < bd) { bd = d; best = b; }
+            }
+            return best;
+        }
+        function launch(base, dx, dy) {
+            base.ammo--;
+            const sp = base.fast ? 5.6 : 3.4; // centre base is the fast one
+            const ang = Math.atan2(dy - groundY, dx - base.x);
+            friendly.push({
+                ox: base.x, oy: groundY, x: base.x, y: groundY,
+                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, tx: dx, ty: dy,
+            });
+        }
         function aiFire(now) {
-            if (!battery.alive || friendly.length >= maxFriendly) return;
+            if (friendly.length >= 24) return; // array safety bound only
             // Most threatening untargeted incoming = the one closest to ground.
             let best = null, bestProg = -1;
             for (const m of incoming) {
@@ -437,15 +476,27 @@
             const dy = Math.max(H * 0.32, Math.min(groundY - 46, best.y + best.vy * 46));
             const k = best.vy !== 0 ? (dy - best.y) / best.vy : 0;
             const dx = Math.max(16, Math.min(W - 16, best.x + best.vx * k));
-            const ang = Math.atan2(dy - groundY, dx - battery.x);
-            const sp = 4.4;
-            friendly.push({
-                ox: battery.x, oy: groundY, x: battery.x, y: groundY,
-                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, tx: dx, ty: dy,
-            });
+            const base = pickBase(dx);
+            if (!base) return; // every base dead or out of ammo
+            launch(base, dx, dy);
             best.targeted = true;
             best.targetUntil = now + 1600;
         }
+
+        // A click (or tap) commands a strike on that exact point — fired
+        // from the nearest base with ammo. Listens on window because
+        // #aurora-root is pointer-events:none; we never preventDefault, so
+        // links/buttons keep working — the strike is purely additive.
+        function onCommand(e) {
+            if (dead || interWave) return;
+            const t = e.touches && e.touches[0] ? e.touches[0] : e;
+            if (t.clientX === undefined) return;
+            const dx = Math.max(8, Math.min(W - 8, t.clientX));
+            const dy = Math.max(H * 0.1, Math.min(groundY - 12, t.clientY));
+            const base = pickBase(dx);
+            if (base) launch(base, dx, dy);
+        }
+        window.addEventListener('click', onCommand);
 
         function step(now) {
             const dt = Math.min(50, now - prev); prev = now;
@@ -454,9 +505,10 @@
             ctx.fillStyle = palette.bg;
             ctx.fillRect(0, 0, W, H);
 
-            if (!dead) {
-                if (now >= nextSpawn && incoming.length < maxIncoming) {
+            if (!dead && !interWave) {
+                if (waveSpawned < waveQuota && now >= nextSpawn && incoming.length < maxIncoming) {
                     spawnIncoming();
+                    waveSpawned++;
                     nextSpawn = now + spawnEvery * (0.7 + Math.random() * 0.9);
                 }
                 if (now - lastAI > 300) { aiFire(now); lastAI = now; }
@@ -476,8 +528,12 @@
                         const d = Math.abs(c.x - m.x);
                         if (d < hd) { hd = d; hit = c; }
                     }
-                    if (!hit && battery.alive && Math.abs(battery.x - m.x) < 26) hit = battery;
-                    if (hit) hit.alive = false;
+                    for (const b of bases) {
+                        if (!b.alive) continue;
+                        const d = Math.abs(b.x - m.x);
+                        if (d < hd) { hd = d; hit = b; }
+                    }
+                    if (hit) hit.alive = false; // a downed base loses its ammo until next wave
                     incoming.splice(i, 1);
                 }
             }
@@ -523,7 +579,7 @@
             ctx.stroke();
             ctx.globalAlpha = 1;
 
-            // cities + battery (white, like the ship)
+            // cities + bases (white, like the ship)
             ctx.strokeStyle = palette.head;
             ctx.shadowColor = palette.head;
             ctx.shadowBlur = 6;
@@ -541,13 +597,24 @@
                 ctx.lineTo(c.x + 9, groundY + 5);
                 ctx.stroke();
             }
-            if (battery.alive) {
+            for (const b of bases) {
+                if (!b.alive) continue;
+                // Empty-but-standing base dims; ammo shows as a short bar.
+                ctx.globalAlpha = b.ammo > 0 ? 1 : 0.4;
                 ctx.beginPath();
-                ctx.moveTo(battery.x - 11, groundY + 5);
-                ctx.lineTo(battery.x, groundY - 12);
-                ctx.lineTo(battery.x + 11, groundY + 5);
+                ctx.moveTo(b.x - 12, groundY + 5);
+                ctx.lineTo(b.x, groundY - 13);
+                ctx.lineTo(b.x + 12, groundY + 5);
                 ctx.closePath();
                 ctx.stroke();
+                if (b.ammo > 0) {
+                    const bw = 20 * (b.ammo / AMMO);
+                    ctx.beginPath();
+                    ctx.moveTo(b.x - bw / 2, groundY - 17);
+                    ctx.lineTo(b.x + bw / 2, groundY - 17);
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
             }
             ctx.shadowBlur = 0;
 
@@ -630,20 +697,41 @@
                 ctx.shadowBlur = 0;
             }
 
-            // every defence gone → pause, then rebuild the field
-            if (!dead) {
-                if (!battery.alive && !cities.some(c => c.alive)) { dead = true; deadAt = now; }
-            } else if (now - deadAt > 1200 && incoming.length === 0 && blasts.length === 0 && particles.length === 0) {
-                buildDefenses();
-                friendly.length = 0;
-                dead = false;
+            const fieldClear = incoming.length === 0 && friendly.length === 0
+                && blasts.length === 0 && particles.length === 0;
+
+            if (dead) {
+                // Game over (all cities gone) → pause, rebuild everything.
+                if (now - deadAt > 1200 && incoming.length === 0
+                    && blasts.length === 0 && particles.length === 0) {
+                    buildDefenses();
+                    wave = 1; waveSpawned = 0; waveQuota = quotaFor(1);
+                    friendly.length = 0;
+                    interWave = false;
+                    dead = false;
+                }
+            } else if (!cities.some(c => c.alive)) {
+                dead = true; deadAt = now;
+            } else if (interWave) {
+                // Between waves: bases revive + rearm, cities carry over.
+                if (now - interWaveAt > 1100) {
+                    for (const b of bases) { b.alive = true; b.ammo = AMMO; }
+                    wave++; waveSpawned = 0; waveQuota = quotaFor(wave);
+                    nextSpawn = now + 600;
+                    interWave = false;
+                }
+            } else if (waveSpawned >= waveQuota && fieldClear) {
+                interWave = true; interWaveAt = now;
             }
 
             raf = requestAnimationFrame(step);
         }
         raf = requestAnimationFrame(step);
 
-        return () => { cancelAnimationFrame(raf); };
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener('click', onCommand);
+        };
     }
 
     function buildRoot() {
