@@ -3,25 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Rollins — Agents Building Agents</title>
-    <meta name="description" content="Two hours, live: 60m building a Python agent on screen, then 60m of deep Q&A.">
-    <meta property="og:title" content="Agents Building Agents — live workshop">
-    <meta property="og:description" content="Two hours, live: 60m building a Python agent on screen, then 60m of deep Q&A.">
+    <title>Michael Rollins</title>
+    <meta name="description" content="Michael Rollins — builder, engineer, CTO shaping agentic-engineering practice. Code, writing, and a way to get in touch.">
+    <meta property="og:title" content="Michael Rollins">
+    <meta property="og:description" content="Builder, engineer, and CTO shaping agentic-engineering practice.">
     <meta property="og:url" content="https://rollins.io/">
     <meta name="twitter:card" content="summary">
-    <!--
-      Seat caps (live, enforced by Stripe restrictions.completed_sessions.limit):
-        Supported (plink_1TUuMdGpOisb6fvvgQcc1fHP) — 5
-        Standard  (plink_1TUuMuGpOisb6fvvEr33r45w) — 9
-        Supporter (plink_1TUuMzGpOisb6fvvpAXyifIL) — 6
-        Total = 20. Adjust per-link caps in the Stripe Dashboard if rebalancing.
-
-      Duration is referenced in three places that must stay in sync:
-        - Hero subhead ("Two hours, live")
-        - Curriculum intro paragraph ("first hour … full hour")
-        - Logistics "Format" line ("60m build + 60m Q&A")
-        - FAQ ("60-minute Q&A")
-    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -34,7 +21,15 @@
     <script defer src="/shared/aurora-live.js"></script>
     <script defer src="/shared/spectrum-wave.js"></script>
     <style>
-        /* Interest form — workshop page only */
+        .aurora-text {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-weight: 500;
+        }
+        /* Interest / contact form — home page only */
         .interest-form .field { display: flex; flex-direction: column; gap: 0.4rem; }
         .interest-form .lbl {
             font-family: var(--font-mono);
@@ -70,7 +65,7 @@
 </head>
 <body class="aurora-page antialiased" data-aurora-asteroids="3">
 
-    <main class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+    <main class="max-w-prose mx-auto px-6 py-12 md:py-16">
 
         <!-- Top nav -->
         <nav class="text-center mb-10 fade-in">
@@ -80,151 +75,89 @@
                 <a href="/consulting/" class="link">consulting</a>
                 <span class="text-dim">·</span>
                 <a href="/links/" class="link">links</a>
-                <span class="text-dim">·</span>
-                <a href="/about/" class="link">about</a>
             </div>
         </nav>
 
         <!-- Identity -->
-        <header class="text-center mb-14 fade-in">
+        <header class="text-center mb-12 fade-in">
             <div class="avatar sm mx-auto mb-3" aria-hidden="true">MR</div>
             <div class="eyebrow">rollins.io</div>
         </header>
 
         <!-- Hero -->
-        <header class="card p-8 md:p-10 mb-20">
-            <div class="eyebrow mb-4 fade-in" style="text-transform:none">
-                <span class="text-accent">●</span>&nbsp;&nbsp;Live · Thursday, May 21 · 12:00 ET
-            </div>
-            <h1 class="text-4xl md:text-5xl font-medium tracking-tight mb-6 fade-in" style="animation-delay:0.05s">
-                Build an Agent
+        <section class="mb-14 text-center">
+            <h1 class="text-5xl md:text-6xl font-medium tracking-tight leading-[0.95] mb-7 fade-in" style="animation-delay:0.05s">
+                Michael<br>
+                <span class="aurora-text">Rollins</span>
             </h1>
-            <p class="text-fg text-lg leading-relaxed mb-3 max-w-prose fade-in" style="animation-delay:0.1s">
-                Two hours: 60m building a Python agent; 60m of Q&amp;A.
+            <p class="text-fg text-lg leading-relaxed mb-7 fade-in" style="animation-delay:0.08s">
+                Engineer and CTO shaping agentic-engineering practice.
             </p>
-            <p class="text-muted leading-relaxed mb-8 max-w-prose fade-in" style="animation-delay:0.12s">
-                Agents build the harness live. You take it to your stack.
-            </p>
-            <div class="flex flex-wrap gap-3 fade-in" style="animation-delay:0.15s">
-                <a href="#pricing" class="btn btn-primary">Get a seat <span aria-hidden="true">→</span></a>
-                <a href="#details" class="btn btn-ghost">The brief</a>
-            </div>
-        </header>
-
-        <!-- Curriculum -->
-        <section id="details" class="card p-8 md:p-10 mb-20">
-            <div class="eyebrow mb-3">Curriculum</div>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Real code on screen.</h2>
-            <p class="text-muted leading-relaxed mb-8 max-w-prose">
-                Not a slide deck. We build together the first hour, then a full hour of deep Q&amp;A. Starter code drops at the start — come with your environment ready (see <a href="#requirements" class="link">Requirements</a>).
-            </p>
-
-            <div class="step"><span class="idx">01</span><div><div class="title">Execution Environment</div><div class="body">A Python execution environment in Docker.</div></div></div>
-            <div class="step"><span class="idx">02</span><div><div class="title">The Loop</div><div class="body">An LLM that writes, runs, and reads code.</div></div></div>
-            <div class="step"><span class="idx">03</span><div><div class="title">The Memory</div><div class="body">A RAG store the agent queries.</div></div></div>
-            <div class="step"><span class="idx">04</span><div><div class="title">The Handoff</div><div class="body">Extra tools, then port it to your stack.</div></div></div>
+            <ul class="flex flex-col gap-2.5 mb-7 text-left fade-in" style="animation-delay:0.1s">
+                <li class="bullet">Scaled Flurry (Yahoo) to 5B daily sessions</li>
+                <li class="bullet">Now: agentic systems at Rellify and FD</li>
+                <li class="bullet">Early AI at Outlier</li>
+                <li class="bullet">iOS, Android, backend, frontend, infra</li>
+            </ul>
         </section>
 
-        <!-- Logistics -->
-        <section class="mb-20">
-            <div class="eyebrow mb-3">Logistics</div>
-            <div class="card p-6">
-                <div class="kv"><span class="k">Date</span><span class="v">Thursday, May 21</span></div>
-                <div class="kv"><span class="k">Start</span><span class="v">12:00 ET</span></div>
-                <div class="kv"><span class="k">Elsewhere</span><span class="v">09:00 PT · 21:30 IST · 17:00 WAT</span></div>
-                <div class="kv"><span class="k">Format</span><span class="v">60m build + 60m Q&amp;A</span></div>
-                <div class="kv"><span class="k">Venue</span><span class="v">Zoom (link on purchase)</span></div>
-                <div class="kv"><span class="k">Replay</span><span class="v">Included</span></div>
-            </div>
-        </section>
-
-        <!-- Requirements -->
-        <section id="requirements" class="mb-20">
-            <div class="eyebrow mb-3">Prerequisites</div>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Show up ready.</h2>
-            <p class="text-muted leading-relaxed mb-8 max-w-prose">
-                We build from minute one. Your environment must be ready — no live setup help.
-            </p>
-
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="card p-5">
-                    <div class="eyebrow mb-3">A · You should know</div>
-                    <ul class="space-y-2.5 text-sm leading-relaxed">
-                        <li class="text-fg"><span class="text-fg font-medium">Python</span> and/or <span class="text-fg font-medium">JS / TS</span> — comfortable reading/writing code and with API calls.</li>
-                        <li class="text-fg">An LLM coding tool — ideally <span class="text-fg font-medium">Claude Code</span>, <span class="text-fg font-medium">Codex</span>, or <span class="text-fg font-medium">Cursor</span>.</li>
-                    </ul>
-                </div>
-
-                <div class="card p-5">
-                    <div class="eyebrow mb-3">B · Install ahead</div>
-                    <ul class="space-y-2.5 text-sm leading-relaxed">
-                        <li class="text-fg"><span class="text-fg font-medium">Docker</span>, running.</li>
-                        <li class="text-fg"><span class="text-fg font-medium">Python</span> — <code class="font-mono text-xs text-accent2">python</code> + <code class="font-mono text-xs text-accent2">pip</code> or <code class="font-mono text-xs text-accent2">uv</code>.</li>
-                        <li class="text-fg"><span class="text-fg font-medium">Node</span> — <code class="font-mono text-xs text-accent2">node</code> + <code class="font-mono text-xs text-accent2">npm</code> / <code class="font-mono text-xs text-accent2">pnpm</code> / <code class="font-mono text-xs text-accent2">bun</code>.</li>
-                        <li class="text-fg"><span class="text-fg font-medium">Git</span>.</li>
-                        <li class="text-fg"><span class="text-fg font-medium">API key with credits</span> on your LLM provider.</li>
-                    </ul>
-                    <p class="text-muted text-xs mt-4 pt-3 border-t border-rule leading-relaxed">
-                        <span class="text-accent">Heads up</span> — sandbox + RAG db pull Docker images; keep a few GB disk and some RAM free.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Pricing -->
-        <section id="pricing" class="mb-20">
-            <div class="eyebrow mb-3">Tickets</div>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-4">Globally fair pricing.</h2>
-            <p class="text-muted leading-relaxed mb-8 max-w-prose">
-                Accessible globally, still high-signal. Pick the tier that fits.
-            </p>
-
-            <div class="grid md:grid-cols-3 gap-4">
-                <div class="tier">
-                    <div class="tier-eyebrow"><span class="label">Supported</span><span>Student · Global</span></div>
-                    <div class="price"><span class="currency">$</span>29</div>
-                    <p class="blurb">Students, new grads, or builders where $99 doesn't map to local prices.</p>
-                    <ul>
-                        <li>Live access + Q&amp;A</li>
-                        <li>Starter framework code</li>
-                        <li>Unlisted replay + notes</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/cNi4gz5Z1eED1uC5YE6c000" class="btn btn-ghost">Choose Supported</a>
-                </div>
-
-                <div class="tier featured">
-                    <div class="inner">
-                        <div class="tier-eyebrow"><span class="label">Standard · Recommended</span><span>Engineer · Founder</span></div>
-                        <div class="price"><span class="currency">$</span>99</div>
-                        <p class="blurb">Most engineers, builders, and technical founders.</p>
-                        <ul>
-                            <li>Live access + Q&amp;A</li>
-                            <li>Starter framework code</li>
-                            <li>Unlisted replay + notes</li>
-                        </ul>
-                        <a href="https://buy.stripe.com/8x2eVd3QT2VVgpw86M6c001" class="btn btn-primary">Choose Standard</a>
+        <!-- Featured: Consulting -->
+        <section class="mb-16 fade-in" style="animation-delay:0.15s">
+            <a href="/consulting/" class="featured lg">
+                <div class="inner">
+                    <div class="top">
+                        <span class="badge">● Bring this to your team</span>
+                        <span class="arrow">→</span>
                     </div>
+                    <div class="title">Consulting &amp; working sessions</div>
+                    <div class="meta">Onsite or remote, 1–2 days. Your team builds, the pain surfaces, you get a private debrief.</div>
                 </div>
+            </a>
+        </section>
 
-                <div class="tier">
-                    <div class="tier-eyebrow"><span class="label">Supporter</span><span>Patron</span></div>
-                    <div class="price"><span class="currency">$</span>199</div>
-                    <p class="blurb">Support my work and subsidize others' access.</p>
-                    <ul>
-                        <li>All Standard access</li>
-                        <li>Subsidizes a Supported seat</li>
-                        <li>Free 60m New Grad Clinic if all 6 Supporter seats sell</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/4gM4gzafh1RR4GOfze6c002" class="btn btn-ghost">Choose Supporter</a>
-                </div>
-            </div>
+        <!-- Elsewhere -->
+        <section class="mb-16 fade-in" style="animation-delay:0.2s">
+            <div class="eyebrow mb-4">Elsewhere</div>
 
-            <!-- Express interest -->
-            <div id="interest" class="card p-6 mt-6 scroll-mt-8">
+            <a href="https://github.com/rollinsio" class="row-link">
+                <span class="label">GitHub</span>
+                <span class="desc">AI starter projects + work</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://www.youtube.com/@MichaelRollins" class="row-link">
+                <span class="label">YouTube</span>
+                <span class="desc">Drone past, AI next</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://www.youtube.com/@WillAISnapThat" class="row-link">
+                <span class="label">Will AI Snap That</span>
+                <span class="desc">Podcast: AI and your eng job</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://www.instagram.com/rollins.io/" class="row-link">
+                <span class="label">Instagram</span>
+                <span class="desc">Mildly enraging hot takes</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://www.linkedin.com/in/rollinsmichael/" class="row-link">
+                <span class="label">LinkedIn</span>
+                <span class="desc">Professional work</span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="#interest" class="row-link">
+                <span class="label">Contact</span>
+                <span class="desc">Get in touch</span>
+                <span class="arrow">→</span>
+            </a>
+        </section>
+
+        <!-- Get in touch -->
+        <section id="interest" class="mb-16 scroll-mt-8 fade-in" style="animation-delay:0.22s">
+            <div class="card p-6">
                 <div class="mb-5">
-                    <div id="interest-eyebrow" class="eyebrow mb-2">Not ready yet?</div>
-                    <h3 id="interest-heading" class="text-lg font-medium mb-1.5">Get the heads-up.</h3>
-                    <p id="interest-blurb" class="text-muted text-sm leading-relaxed">Join the list — date confirmation, starter-framework preview, and a heads-up before tickets open.</p>
+                    <div id="interest-eyebrow" class="eyebrow mb-2">Get in touch</div>
+                    <h3 id="interest-heading" class="text-lg font-medium mb-1.5">Send a message.</h3>
+                    <p id="interest-blurb" class="text-muted text-sm leading-relaxed">What you're working on or need — I'll reply.</p>
                 </div>
 
                 <form id="interest-form" action="https://formspree.io/f/mqenopqj" method="POST" class="interest-form grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -245,7 +178,7 @@
                         <textarea name="notes" rows="3"></textarea>
                     </label>
                     <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
-                    <input type="hidden" id="interest-subject" name="_subject" value="Workshop interest — Agents Building Agents">
+                    <input type="hidden" id="interest-subject" name="_subject" value="Contact — rollins.io">
                     <div class="sm:col-span-2 mt-1">
                         <button type="submit" class="btn btn-primary">Send <span aria-hidden="true">→</span></button>
                     </div>
@@ -253,43 +186,19 @@
 
                 <div id="interest-success" class="hidden">
                     <div class="eyebrow mb-2" style="color: var(--accent2)">Got it</div>
-                    <h3 class="text-lg font-medium mb-1.5">You're on the list.</h3>
-                    <p class="text-muted text-sm leading-relaxed">I'll send the date and starter-framework preview before tickets open.</p>
+                    <h3 class="text-lg font-medium mb-1.5">Message sent.</h3>
+                    <p class="text-muted text-sm leading-relaxed">Thanks — I'll get back to you soon.</p>
                 </div>
 
                 <div id="interest-error" class="hidden mt-4">
-                    <p class="text-sm leading-relaxed">Send failed — email <a href="mailto:workshop@rollins.io" class="link font-mono">workshop@rollins.io</a> and I'll add you manually.</p>
+                    <p class="text-sm leading-relaxed">Send failed — email <a href="mailto:contact-me@rollins.io" class="link font-mono">contact-me@rollins.io</a> and I'll reply.</p>
                 </div>
             </div>
         </section>
 
-        <!-- FAQ -->
-        <section class="mb-20">
-            <div class="eyebrow mb-3">FAQ</div>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-6">Quick answers.</h2>
-
-            <details class="qa">
-                <summary>Do I need to be a Python expert?</summary>
-                <div class="ans">No. Basic Python and/or JS / TS — comfortable with code and API calls. No ML background needed.</div>
-            </details>
-            <details class="qa">
-                <summary>Will you review my specific project?</summary>
-                <div class="ans">Yes — bring it to the 60-minute Q&amp;A. Submit questions early (link after checkout) so we reach them.</div>
-            </details>
-            <details class="qa">
-                <summary>What happens after I pay?</summary>
-                <div class="ans">You get the calendar invite and a form for advance questions. Starter code drops at session start — be ready (see <a href="#requirements" class="link">Requirements</a>).</div>
-            </details>
-            <details class="qa">
-                <summary>What if I can't make it live?</summary>
-                <div class="ans">All tiers include the replay and notes. Advance questions are answered on the recording too.</div>
-            </details>
-        </section>
-
         <!-- Footer -->
-        <footer class="text-dim text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <span>Δ-V Workshop · <a href="/" class="link">rollins.io</a></span>
-            <span>© 2026</span>
+        <footer class="text-dim text-sm">
+            © 2026 · rollins.io
         </footer>
 
     </main>
@@ -303,14 +212,8 @@
 
             // Every contact CTA on the site funnels into this one form. The
             // `for` query param carries intent so it serves all of them with
-            // the right subject + framing. No param = the workshop default.
+            // the right subject + framing. No param = the generic contact copy.
             const CTX = {
-                contact: {
-                    subject: 'Contact — rollins.io',
-                    eyebrow: 'Get in touch',
-                    heading: 'Send a message.',
-                    blurb: "What you're working on or need — I'll reply."
-                },
                 'consulting-one-day': {
                     subject: 'Consulting interest — One-day engagement',
                     eyebrow: 'Consulting · one day',
