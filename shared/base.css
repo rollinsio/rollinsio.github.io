@@ -105,6 +105,17 @@ a { color: inherit; text-decoration: none; }
     flex-shrink: 0;
 }
 
+/* Gradient-clipped text — surname on home, headline accents elsewhere.
+   Rides the spectrum wave via --accent/--accent2. */
+.aurora-text {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-weight: 500;
+}
+
 /* Generic card surface. */
 .card {
     background: rgb(var(--bg-rgb) / 0);
