@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP is Dead — Michael Rollins</title>
+    <meta name="description" content="MCP is wildly token inefficient. A custom harness benchmarking MCP token usage against the same capabilities reached through an Agent SDK — write-up, harness reference, and the server under test.">
+    <meta property="og:title" content="MCP is Dead">
+    <meta property="og:description" content="MCP's token cost is linear — the surface travels in the prompt every turn. Through an Agent SDK it's a constant. The experiments, the harness, and the server under test.">
+    <meta property="og:url" content="https://rollins.io/mcp-is-dead/">
+    <meta name="twitter:card" content="summary">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/tokens.css">
+    <link rel="stylesheet" href="/shared/base.css">
+    <link rel="stylesheet" href="/shared/components.css">
+    <link rel="stylesheet" href="/shared/aurora-live.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/shared/tailwind-init.js"></script>
+    <script defer src="/shared/aurora-live.js"></script>
+    <script defer src="/shared/spectrum-wave.js"></script>
+</head>
+<body class="aurora-page antialiased" data-aurora-asteroids="2">
+
+    <main class="max-w-prose mx-auto px-6 py-12 md:py-16">
+
+        <!-- Top nav -->
+        <nav class="text-center mb-10 fade-in">
+            <div class="eyebrow flex justify-center items-center gap-3 flex-wrap">
+                <a href="/" class="link">home</a>
+                <span class="text-dim">·</span>
+                <a href="/links/" class="link">links</a>
+            </div>
+        </nav>
+
+        <!-- Identity -->
+        <header class="text-center mb-14 fade-in">
+            <a href="/" aria-label="Back to rollins.io" class="avatar sm mx-auto mb-3">MR</a>
+            <div class="eyebrow">mcp is dead · rollins.io</div>
+        </header>
+
+        <!-- Hero -->
+        <header class="mb-12">
+            <div class="eyebrow mb-4 fade-in">
+                <span class="text-accent">●</span>&nbsp;&nbsp;Benchmark
+            </div>
+            <h1 class="text-4xl md:text-6xl font-medium tracking-tight leading-[0.95] mb-7 fade-in" style="animation-delay:0.05s">
+                MCP is<br>
+                <span class="aurora-text">Dead.</span>
+            </h1>
+            <p class="text-fg/90 text-lg leading-relaxed mb-5 fade-in" style="animation-delay:0.1s">
+                MCP is wildly token inefficient! I've created a custom harness specifically to test MCP token usage vs. putting the MCP "tool calls" in an Agent SDK.
+            </p>
+            <p class="text-muted leading-relaxed mb-5 fade-in" style="animation-delay:0.12s">
+                The harnessed agent has one tool call, which is "execute_code". Using code, the agent can discover what is available in the SDK, and it may register more "tools" in the SDK to persist new capabilities. As a result, using "tools" becomes a constant cost on the context.
+            </p>
+            <p class="text-muted leading-relaxed mb-5 fade-in" style="animation-delay:0.14s">
+                The first session for building out the new tooling in the SDK is expensive, but once that is done the cost of calling the agent SDK tooling becomes a constant and does not continue to fill the context.
+            </p>
+            <p class="text-muted leading-relaxed mb-5 fade-in" style="animation-delay:0.16s">
+                On the other hand, the cost in terms of tokens for MCP is a linear progression since the MCP surface must travel in the prompt on every turn.
+            </p>
+            <p class="text-muted leading-relaxed fade-in" style="animation-delay:0.18s">
+                I ran several sets of experiments with the harness using both the MCP server and the Agent SDK to validate my results. The links to everything are below.
+            </p>
+        </header>
+
+        <!-- Links -->
+        <section class="space-y-2.5 mb-14">
+            <a href="https://claude.ai/code/artifact/bd0bfa94-2b44-4dcc-863e-32bc8b1f5a43" class="link-btn fade-in" style="animation-delay:0.22s" rel="noopener">
+                <span class="left"><span class="label">Experiment Write Up</span><span class="sub">claude.ai artifact</span></span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://claude.ai/code/artifact/2ee2991d-4f62-4a6c-9cd8-f3184dd351e5" class="link-btn fade-in" style="animation-delay:0.25s" rel="noopener">
+                <span class="left"><span class="label">Harness Reference</span><span class="sub">claude.ai artifact</span></span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://glama.ai/mcp/servers/katareayush/opdesk-mcp" class="link-btn fade-in" style="animation-delay:0.28s" rel="noopener">
+                <span class="left"><span class="label">OpsDesk MCP</span><span class="sub">glama.ai</span></span>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://github.com/katareayush/opdesk-mcp" class="link-btn fade-in" style="animation-delay:0.31s" rel="noopener">
+                <span class="left"><span class="label">OpsDesk GitHub</span><span class="sub">github.com</span></span>
+                <span class="arrow">→</span>
+            </a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center">
+            <a href="/links/" class="btn btn-ghost fade-in" style="animation-delay:0.34s">← back to links</a>
+        </footer>
+
+    </main>
+
+</body>
+</html>
